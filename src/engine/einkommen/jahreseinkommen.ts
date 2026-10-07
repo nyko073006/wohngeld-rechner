@@ -96,16 +96,16 @@ export function berechneJahreseinkommen(rs: Rechtsstand, m: MitgliedEingabe, ind
   const selbst = positiv("selbstaendig", "Selbständig");
   const vermietung = positiv("vermietung", "Vermietung");
 
-  // § 20 EStG nach Sparer-Pauschbetrag, plus § 14 Abs. 2 Nr. 15 WoGG: der steuerfreie Betrag,
-  // soweit die Kapitalerträge die Schwelle übersteigen.
+  // § 20 EStG nach Sparer-Pauschbetrag, plus § 14 Abs. 2 Nr. 15 WoGG: der steuerfreie Betrag zählt,
+  // soweit er die Schwelle von 100 € übersteigt. Ergebnis: Erträge minus 100 € (WoGVwV Nr. 17.03.5 Beispiel 2).
   const kapitalErtrag = jahr(summeArt("kapital"));
   let kapital = new D(0);
   if (!kapitalErtrag.isZero()) {
     const steuerfrei = D.min(kapitalErtrag, w.sparerPauschbetrag);
-    const nr15 = D.min(steuerfrei, D.max(0, kapitalErtrag.minus(w.kapitalSchwelle)));
+    const nr15 = D.max(0, steuerfrei.minus(w.kapitalSchwelle));
     kapital = posten("Kapital", kapitalErtrag.minus(steuerfrei).plus(nr15));
     annahmen.push(
-      `Kapitalerträge: Sparer-Pauschbetrag ${w.sparerPauschbetrag} € je Person; er zählt nach § 14 Abs. 2 Nr. 15 WoGG, soweit die Erträge ${w.kapitalSchwelle} € übersteigen (wörtliche Lesart, kein amtliches Zahlenbeispiel).`,
+      `Kapitalerträge: ${w.kapitalSchwelle} € im Jahr bleiben frei (§ 14 Abs. 2 Nr. 15 WoGG, Rechenweg wie WoGVwV Nr. 17.03.5 Beispiel 2).`,
     );
   }
 

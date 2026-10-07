@@ -58,13 +58,13 @@ describe("Jahreseinkommen: Einkünfte nach § 14 Abs. 1 WoGG", () => {
   it("§ 14 Abs. 1 WoGG: Vermietung mit Überschuss", () => {
     expect(jahr([{ art: "vermietung", betragMonatlich: 300 }])).toBe("3600.00");
   });
-  it("§ 14 Abs. 2 Nr. 15 WoGG: Sparer-Pauschbetrag zählt, soweit die Erträge 100 € übersteigen", () => {
+  it("§ 14 Abs. 2 Nr. 15 WoGG, WoGVwV 17.03.5: Kapitalerträge über 100 € im Jahr zählen", () => {
     expect(jahr([{ art: "kapital", betragMonatlich: 8 }])).toBe("0.00"); // 96 € im Jahr
     expect(jahr([{ art: "kapital", betragMonatlich: 9 }])).toBe("8.00"); // 108 € im Jahr
     expect(jahr([{ art: "kapital", betragMonatlich: 50 }])).toBe("500.00"); // 600 €
-    expect(jahr([{ art: "kapital", betragMonatlich: 87.5 }])).toBe("1000.00"); // 1.050 €: 50 + 950
-    expect(jahr([{ art: "kapital", betragMonatlich: 1000 }])).toBe("12000.00");
-    expect(rechne([{ art: "kapital", betragMonatlich: 50 }]).annahmen.join(" ")).toContain("Sparer-Pauschbetrag");
+    expect(jahr([{ art: "kapital", betragMonatlich: 87.5 }])).toBe("950.00"); // 1.050 € − 100 €
+    expect(jahr([{ art: "kapital", betragMonatlich: 1000 }])).toBe("11900.00");
+    expect(rechne([{ art: "kapital", betragMonatlich: 50 }]).annahmen.join(" ")).toContain("WoGVwV Nr. 17.03.5");
   });
 });
 
