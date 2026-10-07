@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { RechtsstandFehlt, rechtsstandFuer } from "../../src/rechtsstand";
+import { RechtsstandFehlt, WOGG_2025, rechtsstandFuer } from "../../src/rechtsstand";
 import {
   heizkostenentlastung,
   hoechstbetrag,
@@ -69,5 +69,27 @@ describe("Tabellenzugriff 2025", () => {
 
   it("wirft bei Haushaltsgröße unter 1", () => {
     expect(() => hoechstbetrag(rs, 0, 1)).toThrow();
+  });
+});
+
+describe("Rechtsstand 2025: Einkommenswerte vorhanden (§§ 14 bis 18, 21 WoGG)", () => {
+  it("jeder Einkommenswert ist eine Zahl oder ein Dezimal-String", () => {
+    const { unterhaltHoechst, ...rest } = WOGG_2025.einkommen;
+    expect(Object.keys(rest)).toHaveLength(17);
+    for (const wert of [...Object.values(rest), ...Object.values(unterhaltHoechst)])
+      expect(typeof wert === "number" || /^\d+(\.\d+)?$/.test(String(wert))).toBe(true);
+    expect(Object.keys(unterhaltHoechst).sort()).toEqual(["auswaerts_ausbildung", "ehegatte", "kind_wechselmodell", "sonstige"]);
+  });
+});
+
+describe("Rechtsstand ist tief eingefroren", () => {
+  it("verschachtelte Werte lassen sich zur Laufzeit nicht ändern", () => {
+    expect(Object.isFrozen(WOGG_2025)).toBe(true);
+    expect(Object.isFrozen(WOGG_2025.hoechstbetraege.bis5[1])).toBe(true);
+    expect(Object.isFrozen(WOGG_2025.einkommen.unterhaltHoechst)).toBe(true);
+    expect(() => {
+      (WOGG_2025.koeffizienten[1] as { a: string }).a = "9";
+    }).toThrow(TypeError);
+    expect(WOGG_2025.koeffizienten[1]?.a).toBe("0.04");
   });
 });

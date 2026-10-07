@@ -1,8 +1,9 @@
+import { tiefEinfrieren } from "./einfrieren";
 import type { Rechtsstand } from "./typen";
 
 // Werte ab 01.01.2025, Zweite Verordnung zur Fortschreibung des Wohngeldes, BGBl. 2024 I Nr. 314.
 // Geprüft gegen gesetze-im-internet.de am 07.10.2026, siehe docs/quellen/2026-10-07-recherche-wohngeld-fachlich.md.
-export const WOGG_2025: Rechtsstand = {
+export const WOGG_2025: Rechtsstand = tiefEinfrieren({
   id: "wogg-2025",
   gueltigAb: "2025-01-01",
   gueltigBis: "2026-12-31",
@@ -70,4 +71,36 @@ export const WOGG_2025: Rechtsstand = {
 
   // § 21 Nr. 1 WoGG
   bagatellgrenze: 10,
-};
+
+  // Einkommen. Belege: docs/quellen/2026-10-08-recherche-einkommen-betraege.md (Abruf 08.10.2026).
+  // Alle Werte gelten unverändert 2025 und 2026.
+  einkommen: {
+    // § 9a Satz 1 Nr. 1a, 1b und 3 EStG, https://www.gesetze-im-internet.de/estg/__9a.html
+    arbeitnehmerPauschbetrag: 1230,
+    versorgungsPauschbetrag: 102,
+    rentenPauschbetrag: 102,
+    // § 20 Abs. 9 EStG; § 14 Abs. 2 Nr. 15 WoGG (Schwelle 100 €)
+    sparerPauschbetrag: 1000,
+    kapitalSchwelle: 100,
+    // § 16 Satz 1 WoGG: jeweils 10 Prozent
+    abzugsSatz: "0.1",
+    // § 10 Abs. 1 BEEG: 300 € im Monat anrechnungsfrei
+    elterngeldFreiMonatlich: 300,
+    // § 14 Abs. 2 Nr. 19 Buchst. b WoGG
+    zuwendungDritterFrei: 480,
+    // § 17 Nr. 1 bis 4 WoGG, https://www.gesetze-im-internet.de/wogg/__17.html
+    freibetragSchwerbehindert: 1800,
+    freibetragNsVerfolgt: 750,
+    freibetragAlleinerziehend: 1320,
+    freibetragKindErwerbHoechst: 1200,
+    // § 17a Abs. 1 WoGG; RBS 1 = 563 € in 2025 und 2026 (RBSFV 2026, BGBl. 2025 I Nr. 243, Nullrunde)
+    grundrenteSockel: 1200,
+    grundrenteSatz: "0.3",
+    regelbedarfsstufe1: 563,
+    // § 18 Satz 1 Nr. 1 bis 4 WoGG
+    unterhaltHoechst: { auswaerts_ausbildung: 3000, kind_wechselmodell: 3000, ehegatte: 6000, sonstige: 3000 },
+    // WoGVwV vom 28.06.2017 Nr. 21.37 Abs. 1, https://www.verwaltungsvorschriften-im-internet.de/bsvwvbund_28062017_SWII4.htm
+    vermoegenErstes: 60000,
+    vermoegenWeiteres: 30000,
+  },
+});

@@ -13,6 +13,32 @@ export interface Koeffizienten {
   c: string;
 }
 
+// § 18 WoGG Satz 1 Nr. 1 bis 4.
+export const UNTERHALT_ARTEN = ["auswaerts_ausbildung", "kind_wechselmodell", "ehegatte", "sonstige"] as const;
+export type UnterhaltArt = (typeof UNTERHALT_ARTEN)[number];
+
+// Beträge der Einkommensermittlung, jährlich, wenn nicht anders vermerkt.
+export interface EinkommenWerte {
+  arbeitnehmerPauschbetrag: number; // § 9a Satz 1 Nr. 1a EStG
+  versorgungsPauschbetrag: number; // § 9a Satz 1 Nr. 1b EStG
+  rentenPauschbetrag: number; // § 9a Satz 1 Nr. 3 EStG
+  sparerPauschbetrag: number; // § 20 Abs. 9 EStG, je Person
+  kapitalSchwelle: number; // § 14 Abs. 2 Nr. 15 WoGG
+  abzugsSatz: string; // § 16 WoGG, je Kategorie
+  elterngeldFreiMonatlich: number; // § 10 Abs. 1 BEEG, monatlich
+  zuwendungDritterFrei: number; // § 14 Abs. 2 Nr. 19 Buchst. b WoGG
+  freibetragSchwerbehindert: number; // § 17 Nr. 1 WoGG
+  freibetragNsVerfolgt: number; // § 17 Nr. 2 WoGG
+  freibetragAlleinerziehend: number; // § 17 Nr. 3 WoGG
+  freibetragKindErwerbHoechst: number; // § 17 Nr. 4 WoGG
+  grundrenteSockel: number; // § 17a Abs. 1 Satz 2 WoGG
+  grundrenteSatz: string; // § 17a Abs. 1 Satz 2 WoGG
+  regelbedarfsstufe1: number; // Anlage zu § 28 SGB XII, monatlich
+  unterhaltHoechst: Record<UnterhaltArt, number>; // § 18 WoGG
+  vermoegenErstes: number; // WoGVwV Nr. 21.37 Abs. 1 Nr. 1
+  vermoegenWeiteres: number; // WoGVwV Nr. 21.37 Abs. 1 Nr. 2
+}
+
 export interface Rechtsstand {
   id: string;
   gueltigAb: string; // ISO-Datum, einschließlich
@@ -25,4 +51,5 @@ export interface Rechtsstand {
   klimakomponente: StaffelBis5<number>; // § 12 Abs. 7
   zuschlagAb13: number; // § 19 Abs. 3
   bagatellgrenze: number; // § 21 Nr. 1
+  einkommen: EinkommenWerte; // §§ 13 bis 18, 21 Nr. 3
 }
