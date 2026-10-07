@@ -85,3 +85,16 @@ describe("berechneMiete: unmögliche Eingaben", () => {
     }
   });
 });
+
+describe("berechneMiete: Rechenweg mit Anteil (§ 11 Abs. 3)", () => {
+  it("Beispiel 10: Anteil als eigener erster Schritt, sechs Schritte mit Werten", () => {
+    const e = berechneMiete({ rechtsstand, mietstufe: 4, haushaltsmitglieder: 2, zuBeruecksichtigen: 1, mieteMonatlich: 570 });
+    expect(e.schritte[0]).toMatchObject({ norm: "§ 11 Abs. 3 WoGG", wert: "1/2" });
+    expect(e.schritte.map((s) => s.wert)).toEqual(["1/2", "309.50", "12.40", "285.00", "71.30", "356.30"]);
+  });
+  it("Beispiel 1: ohne Mischhaushalt kein Anteil-Schritt, fünf Schritte", () => {
+    const e = berechneMiete({ rechtsstand, mietstufe: 1, haushaltsmitglieder: 1, zuBeruecksichtigen: 1, mieteMonatlich: 335 });
+    expect(e.schritte).toHaveLength(5);
+    expect(e.schritte.map((s) => s.norm)).not.toContain("§ 11 Abs. 3 WoGG");
+  });
+});

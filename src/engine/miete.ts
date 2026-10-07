@@ -52,7 +52,15 @@ export function berechneMiete(e: MieteEingabe): MieteErgebnis {
   const m = beruecksichtigt.plus(heiz);
 
   const anteilText = anteil.equals(1) ? "" : ` (Anteil ${e.zuBeruecksichtigen} von ${n})`;
-  const schritte: Rechenschritt[] = [
+  const schritte: Rechenschritt[] = [];
+  if (!anteil.equals(1))
+    schritte.push({
+      schritt: "Anteil der zu berücksichtigenden Mitglieder",
+      norm: "§ 11 Abs. 3 WoGG",
+      wert: `${e.zuBeruecksichtigen}/${n}`,
+      erklaerung: "Miete, Höchstbetrag und Entlastungsbeträge werden nur zu diesem Anteil angesetzt",
+    });
+  schritte.push(
     {
       schritt: "Höchstbetrag",
       norm: "§ 12 Abs. 1 WoGG, Anlage 1",
@@ -70,7 +78,7 @@ export function berechneMiete(e: MieteEingabe): MieteErgebnis {
     },
     { schritt: "Entlastung Heizkosten", norm: "§ 12 Abs. 6 WoGG", wert: heiz.toFixed(2), erklaerung: `Pauschaler Zuschlag${anteilText}` },
     { schritt: "M", norm: "§ 11 Abs. 1 WoGG", wert: m.toFixed(2), erklaerung: "Berücksichtigte Miete plus Entlastung bei den Heizkosten" },
-  ];
+  );
 
   return {
     anteil,

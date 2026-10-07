@@ -132,3 +132,33 @@ describe("berechneFormel: unmögliche Eingaben", () => {
     }
   });
 });
+
+describe("berechneFormel: Grund für 0 € und Annahmen", () => {
+  it("negatives z4: Grund rechnerisch kein Wohngeld (§ 19 Abs. 1), nicht Bagatellgrenze", () => {
+    const e = berechneFormel({ rechtsstand, zuBeruecksichtigen: 1, m: "445.40", y: "2500" });
+    expect(e.grund).toMatchObject({ code: "rechnerisch_kein_wohngeld", norm: "§ 19 Abs. 1 WoGG" });
+    expect(e.unterBagatellgrenze).toBe(false);
+  });
+  it("9 €: Grund Bagatellgrenze (§ 21 Nr. 1)", () => {
+    const e = berechneFormel({ rechtsstand, zuBeruecksichtigen: 1, m: "445.40", y: "1405.75" });
+    expect(e.grund).toMatchObject({ code: "bagatellgrenze", norm: "§ 21 Nr. 1 WoGG" });
+    expect(e.schritte.at(-1)?.norm).toBe("§ 21 Nr. 1 WoGG");
+  });
+  it("positives Wohngeld: kein Grund, letzter Schritt § 19 Abs. 1", () => {
+    const e = berechneFormel({ rechtsstand, zuBeruecksichtigen: 1, m: "445.40", y: "1162.35" });
+    expect(e.grund).toBeUndefined();
+    expect(e.schritte.at(-1)).toMatchObject({ norm: "§ 19 Abs. 1 WoGG", wert: "110" });
+  });
+  it("§ 19 Abs. 3: Zuschlagsdeckel ist M aus § 11 vor dem Mindestwert-Ersatz", () => {
+    // M = 200 liegt unter dem Mindestwert 298; gerechnet wird mit 298 (Grundbetrag 208), gedeckelt bei 200.
+    const e = berechneFormel({ rechtsstand, zuBeruecksichtigen: 14, m: "200", y: "5000" });
+    expect(e.grundbetrag).toBe(208);
+    expect(e.zuschlag).toBe(0);
+    expect(e.wohngeld).toBe(208);
+  });
+  it("§ 19 Abs. 3: Annahme „kein Zuschlag bei 0 €“ wird ausgegeben, wenn sie greift", () => {
+    expect(berechneFormel({ rechtsstand, zuBeruecksichtigen: 14, m: "2018.60", y: "20000" }).annahmen.join(" ")).toContain("keine Zuschläge");
+    expect(berechneFormel({ rechtsstand, zuBeruecksichtigen: 14, m: "2018.60", y: "4688.25" }).annahmen).toEqual([]);
+    expect(berechneFormel({ rechtsstand, zuBeruecksichtigen: 1, m: "445.40", y: "2500" }).annahmen).toEqual([]);
+  });
+});
