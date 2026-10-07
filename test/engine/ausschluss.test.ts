@@ -25,6 +25,7 @@ describe("pruefeAusschluss: § 7 WoGG", () => {
     expect(r.grund).toBeUndefined();
     expect(r.schritte[0]).toMatchObject({ norm: "§§ 5 bis 7 WoGG", wert: "1 von 2" });
     expect(r.hinweise.join(" ")).toContain("Darlehen");
+    expect(r.hinweise.join(" ")).toContain("Kosten der Unterkunft");
   });
   it("§ 7 Abs. 2 WoGG: in der Bedarfsgemeinschaft berücksichtigtes Mitglied", () => {
     expect(pruefeAusschluss(WOGG_2025, [frei(), mit("in_bedarf_beruecksichtigt")]).ausgeschlossen[0]?.norm).toBe("§ 7 Abs. 2 WoGG");

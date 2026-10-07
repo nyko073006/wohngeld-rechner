@@ -64,7 +64,7 @@ export function pruefeAusschluss(rs: Rechtsstand, mitglieder: MitgliedEingabe[],
   const hinweise: string[] = [];
   if (ausgeschlossen.length > 0)
     hinweise.push(
-      "Kein Ausschluss, wenn die Leistung nur als Darlehen gezahlt wird oder Wohngeld die Hilfebedürftigkeit vermeidet oder beseitigt (§ 7 Abs. 1 Satz 3 WoGG). Dann das Mitglied ohne Ausschluss angeben.",
+      "Ausgeschlossen ist ein Mitglied nur, wenn bei der Leistung Kosten der Unterkunft berücksichtigt wurden (§ 7 Abs. 1 Satz 1 und 2 WoGG). Kein Ausschluss auch, wenn die Leistung nur als Darlehen gezahlt wird oder Wohngeld die Hilfebedürftigkeit vermeidet oder beseitigt (§ 7 Abs. 1 Satz 3 WoGG). Dann das Mitglied ohne Ausschluss angeben.",
     );
 
   if (zuBeruecksichtigen.length === 0)
