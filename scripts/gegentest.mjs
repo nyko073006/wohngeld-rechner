@@ -1,6 +1,6 @@
 // Jede Mutation verändert genau eine Stelle. Bleibt die Testsuite danach grün, prüft sie diese Stelle nicht.
 // Ausgewertet wird der Exit-Code von vitest, nie dessen Textausgabe.
-import { spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 
 const MUTATIONEN = [
@@ -20,15 +20,54 @@ const MUTATIONEN = [
 
 let gruen = 0;
 let rot = 0;
+
+// Gerade mutierte Datei samt Original; bei SIGINT/SIGTERM läuft `finally` nicht, daher hier wiederherstellen.
+let offen = null;
+let laufendesKind = null;
+function wiederherstellen() {
+  if (offen) {
+    writeFileSync(offen.datei, offen.original);
+    offen = null;
+  }
+}
+for (const signal of ["SIGINT", "SIGTERM"]) {
+  process.on(signal, () => {
+    if (laufendesKind) laufendesKind.kill("SIGTERM");
+    wiederherstellen();
+    console.error(`FEHLER: ${signal} empfangen, Datei wiederhergestellt.`);
+    process.exit(2);
+  });
+}
+
+// Asynchron statt spawnSync: Signal-Handler laufen nur, wenn die Ereignisschleife frei ist.
+// status === null heißt: Prozess per Signal beendet. error gesetzt heißt: gar nicht gestartet. Beides ist kein Testergebnis.
+function vitestLaufen() {
+  return new Promise((aufloesen) => {
+    const kind = spawn("npx", ["vitest", "run", "--reporter=dot"], { stdio: "ignore" });
+    laufendesKind = kind;
+    kind.on("error", (error) => aufloesen({ error, status: null, signal: null }));
+    kind.on("close", (status, signal) => aufloesen({ error: null, status, signal }));
+  });
+}
+function unbrauchbar(lauf) {
+  return Boolean(lauf.error) || lauf.status === null;
+}
+
 for (const m of MUTATIONEN) {
   const original = readFileSync(m.datei, "utf8");
   if (!original.includes(m.alt)) {
     console.error(`FEHLER: Stelle für „${m.name}“ nicht gefunden in ${m.datei}: ${m.alt}`);
     process.exit(2);
   }
+  offen = { datei: m.datei, original };
   writeFileSync(m.datei, original.replace(m.alt, m.neu));
   try {
-    const lauf = spawnSync("npx", ["vitest", "run", "--reporter=dot"], { stdio: "ignore" });
+    const lauf = await vitestLaufen();
+    if (unbrauchbar(lauf)) {
+      wiederherstellen();
+      console.error(`FEHLER: vitest lieferte bei „${m.name}“ kein Ergebnis (${lauf.error ? lauf.error.message : `Signal ${lauf.signal}`}).`);
+      process.exit(2);
+    }
     if (lauf.status === 0) {
       gruen++;
       console.log(`GRÜN (schlecht): ${m.name}`);
@@ -37,12 +76,16 @@ for (const m of MUTATIONEN) {
       console.log(`rot (gut):       ${m.name}`);
     }
   } finally {
-    writeFileSync(m.datei, original);
+    wiederherstellen();
   }
 }
 
 console.log(`\n${rot} rot, ${gruen} grün von ${MUTATIONEN.length} Mutationen.`);
-const sauber = spawnSync("npx", ["vitest", "run", "--reporter=dot"], { stdio: "ignore" });
+const sauber = await vitestLaufen();
+if (unbrauchbar(sauber)) {
+  console.error(`FEHLER: Grundlauf lieferte kein Ergebnis (${sauber.error ? sauber.error.message : `Signal ${sauber.signal}`}).`);
+  process.exit(2);
+}
 if (sauber.status !== 0) {
   console.error("FEHLER: Ohne Mutation ist die Suite nicht grün.");
   process.exit(2);
