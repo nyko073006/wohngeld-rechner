@@ -8,6 +8,11 @@ Wohngeld-Rechner als MCP-Server für ChatGPT (Plugin) und andere MCP-fähige Ass
 
 Gerechnet wird nach dem Recht ab 01.01.2025 (BGBl. 2024 I Nr. 314). Für 2027 liegt ein Regierungsentwurf vor (BT-Drs. 21/8284); er wird eingebaut, sobald er verkündet ist.
 
+## Rechenregeln
+
+- Gerechnet wird nach § 19 WoGG in den Schritten der Anlage 3. Die Zwischenwerte z1 bis z4 rundet der Rechner kaufmännisch auf zehn Nachkommastellen. Ob die zehnte Stelle gerundet oder abgeschnitten wird, regelt das Gesetz nicht. Alle elf Rechenbeispiele des BMWSB (Stand 01.01.2025) ergeben mit beiden Regeln denselben Betrag.
+- Über 12 Haushaltsmitglieder rechnet der Rechner mit den Werten für 12 und schlägt je weiterem Mitglied 65 € zu, höchstens bis zur Höhe der berücksichtigten Miete. Ergibt die Rechnung für 12 Mitglieder kein Wohngeld, gibt es auch keine Zuschläge. Das ist eine Annahme, das Gesetz regelt diesen Fall nicht ausdrücklich.
+
 ## Quellen
 
 Nur öffentliche Quellen: Wohngeldgesetz, Wohngeldverordnung, Veröffentlichungen von BMWSB, Destatis und Bundestag. Alle Fundstellen mit Abrufdatum stehen in [`docs/quellen/`](docs/quellen/).
