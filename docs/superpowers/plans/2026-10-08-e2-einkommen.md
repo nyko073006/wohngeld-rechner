@@ -45,7 +45,7 @@ Eingabe je Mitglied: Liste `{ art, betragMonatlich, … }`. Jahresbetrag = 12 ×
 | `versorgungsbezug` | § 14 Abs. 1 (§ 19 EStG) mit Abs. 2 Nr. 1 | voller Betrag minus 102 € (§ 9a Satz 1 Nr. 1b EStG), eigener Pauschbetrag neben der Rente |
 | `selbstaendig` | § 14 Abs. 1 Satz 1, 4 (§§ 13, 15, 18 EStG) | Gewinn; negative Summe zählt 0, kein Ausgleich mit anderen Arten |
 | `vermietung` | § 14 Abs. 1 Satz 1, 4 (§ 21 EStG) | Überschuss; negative Summe zählt 0 |
-| `kapital` | § 14 Abs. 1 (§ 20 EStG) mit Abs. 2 Nr. 15 | Einkünfte = Erträge − min(Erträge, 1.000 €); dazu min(steuerfreier Teil, Erträge − 100 €) (wörtliche Lesart, Annahme) |
+| `kapital` | § 14 Abs. 1 (§ 20 EStG) mit Abs. 2 Nr. 15 | Einkünfte = Erträge − min(Erträge, 1.000 €); dazu der steuerfreie Teil, soweit er 100 € übersteigt. Ergibt Erträge − 100 € (WoGVwV Nr. 17.03.5 Beispiel 2: 1.301 € → 1.201 €) |
 | `lohnersatz` | § 14 Abs. 2 Nr. 6 | voll (ALG I, Krankengeld, Kurzarbeitergeld, Mutterschaftsgeld, Insolvenzgeld …) |
 | `elterngeld` | § 14 Abs. 2 Nr. 6 mit § 10 BEEG | Monatsbetrag über 300 € (Elterngeld Plus: 150 €) zählt |
 | `zuschlaege_3b` | § 14 Abs. 2 Nr. 11 | voll |
@@ -66,7 +66,7 @@ Danach je Mitglied: Summe × (1 − 0,1 × Zahl der zutreffenden Kategorien Steu
 - § 17 Nr. 3 (1.320 €) einmal je Haushalt (Wortlaut „wenn“), als Haushaltsmerkmal `alleinerziehend`.
 - Grundrentenfreibetrag (§ 17a) aus der Summe der als `rente` angegebenen Beträge (brutto), Deckel 12 × 50 % × Regelbedarfsstufe 1 (563 € in 2025 und 2026) = 3.378 €.
 - Vermögen (§ 21 Nr. 3): Regelgrenze 60.000 € für das erste plus 30.000 € je weiteres zu berücksichtigendes Mitglied (WoGVwV Nr. 21.37 Abs. 1). „Übersteigt“ heißt: genau an der Grenze kein Ausschluss.
-- Sparer-Pauschbetrag 1.000 € je Mitglied (Zusammenveranlagung wird nicht abgebildet, Annahme).
+- Kapitalerträge: Nr. 15 setzt den steuerfreien Sparer-Pauschbetrag an, soweit er 100 € übersteigt; im Ergebnis zählen die Erträge minus 100 € (WoGVwV Nr. 17.03.5 Beispiel 2, Ruling in SDD-Runde Task 2). Der Sparer-Pauschbetrag kürzt sich heraus; Zusammenveranlagung spielt deshalb keine Rolle.
 - Gesamteinkommen wird nicht negativ (Untergrenze 0); die Formel ersetzt Y ohnehin durch den Mindestwert.
 - Aus der E1-Gesamt-Review: Zuschlagsdeckel § 19 Abs. 3 ist das M aus § 11 vor dem Mindestwert-Ersatz; negatives Ergebnis hat den Grund „rechnerisch kein Wohngeld“ statt Bagatellgrenze; Annahme „kein Zuschlag bei 0 €“ wird ausgegeben, wenn sie greift; Rechtsstand tief eingefroren; Anteil nach § 11 Abs. 3 als eigener Rechenschritt.
 
@@ -1691,7 +1691,6 @@ git commit -m "E2: Gesamtablauf berechneWohngeld, alle 11 Beispiele von der Eing
   { name: "Arbeitnehmer-Pauschbetrag", datei: "src/rechtsstand/wogg-2025.ts", alt: "arbeitnehmerPauschbetrag: 1230", neu: "arbeitnehmerPauschbetrag: 1231" },
   { name: "Versorgungs-Pauschbetrag", datei: "src/rechtsstand/wogg-2025.ts", alt: "versorgungsPauschbetrag: 102", neu: "versorgungsPauschbetrag: 103" },
   { name: "Renten-Pauschbetrag", datei: "src/rechtsstand/wogg-2025.ts", alt: "rentenPauschbetrag: 102", neu: "rentenPauschbetrag: 103" },
-  { name: "Sparer-Pauschbetrag", datei: "src/rechtsstand/wogg-2025.ts", alt: "sparerPauschbetrag: 1000", neu: "sparerPauschbetrag: 1001" },
   { name: "Kapital-Schwelle 100 €", datei: "src/rechtsstand/wogg-2025.ts", alt: "kapitalSchwelle: 100", neu: "kapitalSchwelle: 101" },
   { name: "Abzugssatz § 16", datei: "src/rechtsstand/wogg-2025.ts", alt: 'abzugsSatz: "0.1"', neu: 'abzugsSatz: "0.11"' },
   { name: "Elterngeld anrechnungsfrei", datei: "src/rechtsstand/wogg-2025.ts", alt: "elterngeldFreiMonatlich: 300", neu: "elterngeldFreiMonatlich: 301" },
@@ -1716,13 +1715,13 @@ git commit -m "E2: Gesamtablauf berechneWohngeld, alle 11 Beispiele von der Eing
 - [ ] **Step 2: Gegentests laufen lassen**
 
 Run: `npm run gegentest; echo "exit=$?"`
-Expected: 36 rot, 0 grün, `exit=0`. Meldet das Skript „Stelle nicht gefunden“, weicht der Code vom Plan ab: den `alt`-String an die tatsächliche Stelle anpassen, nicht die Mutation streichen. Bleibt eine Mutation grün, fehlt ein Test: im Testmodul des betroffenen Bausteins einen Verhaltenstest ergänzen, der die Stelle trifft, dann erneut laufen lassen. Nie eine grüne Mutation entfernen und nie einen Test ergänzen, der nur den Datenwert vergleicht (der wäre bei jeder Datenänderung rot und prüft die Engine nicht).
+Expected: 35 rot, 0 grün, `exit=0`. (Keine Mutation des Sparer-Pauschbetrags: Er kürzt sich nach WoGVwV Nr. 17.03.5 heraus, die Mutation wäre wirkungsgleich.) Meldet das Skript „Stelle nicht gefunden“, weicht der Code vom Plan ab: den `alt`-String an die tatsächliche Stelle anpassen, nicht die Mutation streichen. Bleibt eine Mutation grün, fehlt ein Test: im Testmodul des betroffenen Bausteins einen Verhaltenstest ergänzen, der die Stelle trifft, dann erneut laufen lassen. Nie eine grüne Mutation entfernen und nie einen Test ergänzen, der nur den Datenwert vergleicht (der wäre bei jeder Datenänderung rot und prüft die Engine nicht).
 
 - [ ] **Step 3: README ergänzen.** Im Abschnitt „## Rechenregeln“ nach dem bestehenden Punkt zu über 12 Mitgliedern anhängen:
 
 ```markdown
 - Einkommen nach §§ 13 bis 18 WoGG mit allen Einnahmearten aus § 14. Welche Art welche Nummer abdeckt, steht im Plan `docs/superpowers/plans/2026-10-08-e2-einkommen.md`.
-- Kapitalerträge: Der Sparer-Pauschbetrag (1.000 € je Person) zählt nach § 14 Abs. 2 Nr. 15 WoGG, soweit die Erträge 100 € im Jahr übersteigen. Ein amtliches Zahlenbeispiel gibt es nicht; der Rechner folgt dem Wortlaut. Zusammenveranlagung wird nicht abgebildet.
+- Kapitalerträge: Von den Erträgen bleiben 100 € im Jahr frei, der Rest zählt (§ 14 Abs. 2 Nr. 15 WoGG; Rechenweg wie WoGVwV Nr. 17.03.5 Beispiel 2).
 - Elterngeld: 300 € im Monat bleiben frei (Elterngeld Plus 150 €), § 10 BEEG. Mehrlingszuschläge werden nicht abgebildet.
 - Aktivrente (§ 14 Abs. 2 Nr. 12 WoGG, seit 2026): Den gesamten Arbeitslohn als nichtselbständige Arbeit eintragen; steuerfrei oder nicht, er zählt voll.
 - Grundrentenfreibetrag (§ 17a WoGG): berechnet aus der gesamten angegebenen Rente, höchstens 3.378 € im Jahr (50 % der Regelbedarfsstufe 1 von 563 €, 2025 und 2026).
