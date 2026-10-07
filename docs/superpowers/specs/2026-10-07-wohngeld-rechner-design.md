@@ -1,6 +1,6 @@
 # Wohngeld-Rechner als ChatGPT-Plugin: Design
 
-Stand: 07.10.2026. Status: vom Auftraggeber freigegeben (Teil 1 und 2 im Gespräch), schriftliche Abnahme offen.
+Stand: 07.10.2026. Status: vom Auftraggeber freigegeben am 08.10.2026.
 
 ## 1. Ziel
 
