@@ -53,9 +53,12 @@ async function zeilen(seite: string): Promise<string[][]> {
 // "4,797E-4" → "0.0004797"; "1.139" → "1139"; "110,40" → "110.4"
 function zahl(text: string): string {
   const t = text.replace(/\s/g, "").replace(/[\u2013\u2212]/g, "-");
+  // Number("") ist 0: eine leere Zelle darf nie als Zahl durchgehen, sonst besteht ein Sollwert 0 gegen nichts.
+  if (t === "") return "LEER";
   const exp = t.match(/^(-?[\d,]+)E(-?\d+)$/i);
   if (exp) return normal(Number(exp[1]!.replace(",", ".")) * 10 ** Number(exp[2]));
-  return normal(Number(t.replace(/\./g, "").replace(",", ".")));
+  const wert = Number(t.replace(/\./g, "").replace(",", "."));
+  return Number.isNaN(wert) ? "NaN" : normal(wert);
 }
 function normal(x: number): string {
   return String(Number(x.toPrecision(12)));
