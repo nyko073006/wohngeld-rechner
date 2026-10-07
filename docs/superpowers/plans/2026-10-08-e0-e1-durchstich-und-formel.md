@@ -18,7 +18,7 @@
 - Kein Logging und keine Speicherung von Eingaben.
 - Kein „amtlich“, kein Bundesadler, kein Auftreten als Behörde.
 - Geldbeträge und Koeffizienten werden in der Engine nur mit `decimal.js` verrechnet, nie mit `number`-Arithmetik.
-- Zwischenwerte z1 bis z4 werden auf zehn Nachkommastellen kaufmännisch gerundet (ROUND_HALF_UP), das Wohngeld kaufmännisch auf volle Euro (Anlage 3 WoGG).
+- Zwischenwerte z1 bis z4 werden auf zehn Nachkommastellen kaufmännisch gerundet (ROUND_HALF_UP), das Wohngeld kaufmännisch auf volle Euro (Anlage 3 WoGG). — überholt durch Ruling im Final Review: abgeschnitten (ROUND_DOWN)
 - Engine-Funktionen sind rein: kein `Date.now()`, kein Netz, kein Dateisystem. Der Stichtag ist Eingabe.
 - Alle Tools: `readOnlyHint: true`, `destructiveHint: false`, `openWorldHint: false`.
 - Code-Bezeichner und Kommentare auf Deutsch, wie in der Spec (`rechtsstandFuer`, `berechneMiete`).

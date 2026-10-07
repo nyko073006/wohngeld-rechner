@@ -18,10 +18,21 @@ describe("berechneFormel: amtliche Beispiele", () => {
   it("Länderfall: 12er-Rechnung, dann 2 × 65 € Zuschlag", () => {
     const e = berechneFormel({ rechtsstand, zuBeruecksichtigen: 14, m: LAENDERFALL_14.m, y: LAENDERFALL_14.y });
     expect(e.z1.toFixed(10)).toBe(LAENDERFALL_14.z1);
-    expect(e.z2.toFixed(10)).toBe(LAENDERFALL_14.z2);
+    expect(e.z2.toFixed(10)).toBe("970.7928566962");
+    expect(e.z3.toFixed(10)).toBe("1047.8071433038");
+    expect(e.z3.toFixed(10)).toBe(LAENDERFALL_14.z3Veroeffentlicht);
+    expect(e.z4.toFixed(10)).toBe("1204.9782147993");
     expect(e.grundbetrag).toBe(LAENDERFALL_14.wohngeldFuer12);
     expect(e.zuschlag).toBe(130);
     expect(e.wohngeld).toBe(LAENDERFALL_14.wohngeld);
+  });
+
+  it("Länderfall: veröffentlichte z2 und z4 sind die kaufmännisch gerundeten Rohwerte", () => {
+    const e = berechneFormel({ rechtsstand, zuBeruecksichtigen: 14, m: LAENDERFALL_14.m, y: LAENDERFALL_14.y });
+    const rohZ2 = e.z1.times(LAENDERFALL_14.y);
+    const rohZ4 = new D("1.15").times(e.z3);
+    expect(rohZ2.toDecimalPlaces(10, D.ROUND_HALF_UP).toFixed(10)).toBe(LAENDERFALL_14.z2Veroeffentlicht);
+    expect(rohZ4.toDecimalPlaces(10, D.ROUND_HALF_UP).toFixed(10)).toBe(LAENDERFALL_14.z4Veroeffentlicht);
   });
 
   it("Zwischenwerte Beispiel 1 auf zehn Stellen", () => {
@@ -29,7 +40,7 @@ describe("berechneFormel: amtliche Beispiele", () => {
     expect(e.z1.toFixed(10)).toBe("0.3010822600");
     expect(e.z2.toFixed(10)).toBe("349.9629649110");
     expect(e.z3.toFixed(10)).toBe("95.4370350890");
-    expect(e.z4.toFixed(10)).toBe("109.7525903524");
+    expect(e.z4.toFixed(10)).toBe("109.7525903523");
   });
 });
 

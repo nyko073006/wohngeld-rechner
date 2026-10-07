@@ -32,8 +32,10 @@ export const BMWSB_2025: BeispielFall[] = [
 // Länderhinweis zu WoGVwV Nr. 19.31, Stand 12/2024 (Herausgeber im PDF nicht lesbar, Belegstärke mittel).
 // https://www.tacheles-sozialhilfe.de/files/Weisungen/WoGG/241202-hinweise-wogmehrals12hmer_geschwaerzt.pdf
 // Veröffentlichte Zwischenwerte: z1 = 0,207069345; z2 = 970,7928566963; z3 = 1047,8071433038; z4 = 1204,9782147994.
-// z3 und z4 sind mit keiner einheitlichen Rundungsregel nachbildbar (mit ROUND_HALF_UP: ...037 und ...993);
-// das Endergebnis 1.205 € bzw. 1.335 € stimmt mit jeder Regel.
+// Nachgerechnet am 08.10.2026: Der Länderhinweis rechnet mit abgeschnittenen Zwischenwerten (z1 bis z4 nach der
+// zehnten Stelle). z3 = M − z2 (abgeschnitten) trifft den veröffentlichten Wert exakt. Die veröffentlichten z2 und z4
+// sind die kaufmännisch auf zehn Stellen gerundeten Rohwerte z1·Y und 1,15·z3; weitergerechnet wird mit den
+// abgeschnittenen Werten (z2 = ...962, z4 = ...993). Das Endergebnis 1.205 € bzw. 1.335 € ist davon unabhängig.
 export const LAENDERFALL_14 = {
   mietstufe: 3 as Mietstufe,
   haushaltsmitglieder: 14,
@@ -42,7 +44,9 @@ export const LAENDERFALL_14 = {
   y: "4688.25",
   m: "2018.60",
   z1: "0.2070693450",
-  z2: "970.7928566963",
+  z2Veroeffentlicht: "970.7928566963",
+  z3Veroeffentlicht: "1047.8071433038",
+  z4Veroeffentlicht: "1204.9782147994",
   wohngeldFuer12: 1205,
   wohngeld: 1335,
 };

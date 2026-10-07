@@ -196,7 +196,7 @@ Später, je eigenes Design: Recht ab 01.01.2027 nach Verkündung (neue Rechtssta
 
 - Ob ein deutsches ChatGPT-Konto des Auftraggebers eigene MCP-Server einbinden kann (Tarif, Region). Klärt E0.
 - ChatGPT-Kompatibilität des MCP-SDK v2. Klärt E0.
-- Rundungsmodus der zehnten Nachkommastelle. Klärt der Länderfall in E1.
+- Rundungsmodus der zehnten Nachkommastelle: geklärt in E1, Abschneiden (Länderfall 6b reproduziert alle vier Zwischenwerte).
 - Vermögensgrenze § 21 Nr. 3: konkrete Beträge stehen in der Verwaltungsvorschrift; nur aufnehmen, wenn öffentlich belegt, sonst als Hinweis statt Rechnung.
 - Grundrentenfreibetrag: belegt ist 281,50 €/Monat für 2025. Wert für 2026 prüfen, da er an der Regelbedarfsstufe 1 hängt.
 - Lizenz des Destatis-Gemeindeverzeichnisses.
