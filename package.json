@@ -10,6 +10,8 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "pruefe:rechtsstand": "tsx scripts/pruefe-rechtsstand.ts",
+    "mietstufen:erzeugen": "tsx scripts/mietstufen-erzeugen.ts",
+    "pruefe:mietstufen": "tsx scripts/pruefe-mietstufen.ts",
     "gegentest": "node scripts/gegentest.mjs"
   },
   "dependencies": {
