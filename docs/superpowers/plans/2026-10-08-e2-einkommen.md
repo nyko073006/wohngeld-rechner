@@ -1512,12 +1512,12 @@ describe("berechneWohngeld: über 12 Mitglieder", () => {
     expect(r.m).toBe("2018.60");
     expect(r.wohngeldMonatlich).toBe(1335);
   });
-  it("Mischhaushalt mit 15 Mitgliedern, eines ausgeschlossen: 1.303 € (nachgerechnet mit Python decimal)", () => {
+  it("Mischhaushalt mit 15 Mitgliedern, eines ausgeschlossen: 1.261 € (Werte für 12, Anteil 14/15; nachgerechnet mit Python decimal)", () => {
     const mitglieder = haushalt(15);
     mitglieder[14] = { ...leer(), ausschluss: "grundsicherungsgeld_sgb2" };
     const r = berechneWohngeld({ stichtag: "2025-07-01", mietstufe: 3, art: "mietzuschuss", mieteMonatlich: 1600, mitglieder });
-    expect(r.m).toBe("1961.31");
-    expect(r.wohngeldMonatlich).toBe(1303);
+    expect(r.m).toBe("1884.03");
+    expect(r.wohngeldMonatlich).toBe(1261);
   });
 });
 
