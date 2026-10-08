@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { MIETSTUFEN_DATEN, pruefeMietstufenDaten, sucheMietstufe } from "../../src/mietstufen/daten";
+import { vorKomma } from "../../src/mietstufen/normalisieren";
 import type { SuchEingabe, SuchErgebnis } from "../../src/mietstufen/typen";
 import { BMWSB_2025 } from "../fixtures/bmwsb-2025";
 
@@ -142,6 +143,28 @@ describe("Mietstufen: lockere Umlautsuche (Endreview C-1)", () => {
     const hochheim = sucheMietstufe({ gemeinde: "Hochheim" });
     expect(hochheim.status).not.toBe("eindeutig");
     expect(kandidaten(hochheim).map((k) => k.gemeinde)).toContain("Hochheim am Main, Stadt");
+  });
+});
+
+describe("Mietstufen: Abdeckung über alle Gemeinden", () => {
+  // Jeder Name vor dem Komma führt zu seiner Gemeinde: eindeutig sie selbst oder mehrdeutig mit ihr in der Liste.
+  // Nie nicht_gefunden, nie eine andere Gemeinde als eindeutiger Treffer.
+  it("alle 10.751 Gemeinden sind über ihren Namen auffindbar", () => {
+    const fehler: string[] = [];
+    for (const [ags, name] of MIETSTUFEN_DATEN.gemeinden) {
+      const land = MIETSTUFEN_DATEN.laender[ags.slice(0, 2)] ?? "";
+      const kreis = MIETSTUFEN_DATEN.kreise[ags.slice(0, 5)] ?? "";
+      const istSie = (k: { gemeinde: string; kreis: string }) => k.gemeinde === name && k.kreis === kreis;
+      const e = sucheMietstufe({ gemeinde: vorKomma(name) });
+      let ok: boolean;
+      if (e.status === "eindeutig") ok = istSie(e.treffer);
+      else if (e.status === "mehrdeutig") {
+        // Die Liste ist auf 25 begrenzt; reicht das nicht, entscheidet die Angabe von Land und Kreis.
+        ok = e.kandidaten.some(istSie) || kandidaten(sucheMietstufe({ gemeinde: vorKomma(name), land, kreis })).some(istSie);
+      } else ok = false;
+      if (!ok) fehler.push(`${ags} ${name} (${kreis}): ${e.status}`);
+    }
+    expect(fehler.slice(0, 20)).toEqual([]);
   });
 });
 
