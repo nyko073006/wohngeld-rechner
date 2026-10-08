@@ -21,9 +21,18 @@ Gerechnet wird nach dem Recht ab 01.01.2025 (BGBl. 2024 I Nr. 314). Für 2027 li
 - Vermögen (§ 21 Nr. 3 WoGG): Regelgrenze 60.000 € für das erste und 30.000 € für jedes weitere zu berücksichtigende Mitglied (WoGVwV Nr. 21.37). Die Behörde prüft den Einzelfall.
 - Ausschluss (§ 7 WoGG): Wer Bürgergeld bzw. Grundsicherungsgeld, Grundsicherung, Hilfe zum Lebensunterhalt oder vergleichbare Leistungen mit Kosten der Unterkunft bezieht, zählt nicht mit; Leistungen nach SGB VIII nur, wenn alle Haushaltsmitglieder sie beziehen. Miete und Höchstbeträge werden dann anteilig angesetzt (§ 11 Abs. 3).
 
+## Mietstufen
+
+Die Höchstbeträge hängen von der Mietstufe (I bis VII) des Wohnorts ab. Sie steht in der Anlage zu § 1 Abs. 3 WoGV (Mietenstufen ab 1. Januar 2023, Gebietsstand 31.03.2021). Die Ortssuche in `src/mietstufen/` findet sie über den Gemeindenamen; das MCP-Tool `mietstufe_finden` folgt in E4.
+
+- Gemeinden ab 10.000 Einwohnern stehen einzeln in der Anlage, alle anderen erhalten die Stufe ihres Kreises (Vorbemerkung der Anlage). Die 28 Gemeinden auf Inseln ohne Festlandanschluss (§ 12 Abs. 4a WoGG) haben gemeinsam Stufe V, auch wenn ihr Kreis niedriger liegt.
+- Die Anlage nennt nur Namen. Schlüssel und Kreise kommen aus dem Gemeindeverzeichnis; die Zuordnung läuft über das Verzeichnis 31.12.2020, gesucht wird in den Namen von 31.12.2025. Sechs Gemeinden, die im Verzeichnis 31.12.2020 fehlen (neu gebildet oder neu geschlüsselt), bekommen die Stufe ihres Kreises. Das ist eine Annahme, die Antwort sagt es.
+- Ein Ortsname, der mehrfach vorkommt (Neustadt, Weimar, Eisenach), liefert eine Kandidatenliste, keinen Treffer. Teile eines Namens („Bad Homburg“) sind nur Vorschläge.
+- Die Datei `data/mietstufen-2023.json` wird erzeugt: `npm run mietstufen:erzeugen`. Der Abgleich mit gesetze-im-internet.de läuft mit `npm run pruefe:mietstufen`.
+
 ## Quellen
 
-Nur öffentliche Quellen: Wohngeldgesetz, Wohngeldverordnung, Veröffentlichungen von BMWSB, Destatis und Bundestag. Alle Fundstellen mit Abrufdatum stehen in [`docs/quellen/`](docs/quellen/).
+Nur öffentliche Quellen: Wohngeldgesetz, Wohngeldverordnung (mit der Anlage der Mietenstufen), Veröffentlichungen von BMWSB, Destatis (Gemeindeverzeichnis) und Bundestag. Alle Fundstellen mit Abrufdatum stehen in [`docs/quellen/`](docs/quellen/), die Rohdaten der Mietstufen mit Prüfsumme in [`data/roh/quellen.json`](data/roh/quellen.json).
 
 ## Haftungsausschluss
 
@@ -31,4 +40,10 @@ Die Ergebnisse sind unverbindliche Schätzungen. Über einen Anspruch entscheide
 
 ## Lizenz
 
-MIT, siehe [LICENSE](LICENSE).
+Der Code steht unter der MIT-Lizenz, siehe [LICENSE](LICENSE). **Die MIT-Lizenz gilt nicht für `data/`.** Dort liegen:
+
+- `data/roh/anlage.html` und `data/roh/wogg-12.html`: Gesetzes- und Verordnungstexte von gesetze-im-internet.de, amtliche Werke ohne urheberrechtlichen Schutz (§ 5 UrhG). Unverändert.
+- `data/roh/gv-31122020.xlsx` und `data/roh/gv-31122025.xlsx`: Gemeindeverzeichnis. © Statistisches Bundesamt (Destatis) im Auftrag der Herausgebergemeinschaft Statistische Ämter des Bundes und der Länder, GV-ISys. Vervielfältigung und Verbreitung, auch auszugsweise, mit Quellenangabe gestattet. Unverändert.
+- `data/mietstufen-2023.json`: aus beiden abgeleitet. Das Gemeindeverzeichnis ist dort nur als Berechnungsgrundlage verwendet und verändert dargestellt (Zuordnung Gemeinde, Kreis, Mietenstufe).
+
+Abrufdatum und Prüfsumme jeder Rohdatei stehen in `data/roh/quellen.json`.

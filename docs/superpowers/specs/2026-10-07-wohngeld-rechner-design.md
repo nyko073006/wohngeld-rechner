@@ -114,6 +114,8 @@ Regeln:
 - Gleiche Namen für Stadt und Kreis (Leipzig, München) und mehrfach vorkommende Gemeindenamen (Neustadt) werden über Kreis und Land unterschieden.
 - Gebietsstand der Liste ist der 31.03.2021, das Gemeindeverzeichnis ist neuer. Gemeinden, die das Skript nicht zuordnen kann, werden aufgelistet und von Hand entschieden, nicht verworfen.
 
+Basis der Zuordnung ist das Gemeindeverzeichnis 31.12.2020, weil der Gebietsstand der Anlage (31.03.2021) bei Destatis nicht mehr abrufbar ist (Entscheidung des Auftraggebers vom 09.10.2026); die Zuordnung ist gegen beide Stände gleich. Die Suche läuft über die Namen des Verzeichnisses 31.12.2025. Gemeinden, die im Basisverzeichnis fehlen, erhalten die Kreisstufe als gekennzeichnete Annahme.
+
 Die Rohdaten liegen unverändert in `data/roh/`, damit jede Stufe nachprüfbar bleibt. Lizenz des Gemeindeverzeichnisses vor dem Einchecken prüfen und in der README nennen.
 
 Suche: normalisierter Name (Groß- und Kleinschreibung, ß/ss, Umlaute, Zusätze wie „Stadt“), optional Kreis und Land. Ergebnis ist genau ein Treffer, eine Kandidatenliste oder „nicht gefunden“ mit ähnlichen Namen. Postleitzahlen gehören nicht in diese Etappe.
@@ -129,7 +131,7 @@ Alle Tools tragen `readOnlyHint: true`, `destructiveHint: false`, `openWorldHint
 ### `mietstufe_finden`
 
 Eingabe: `gemeinde` (Pflicht), `kreis`, `land` (optional).
-Ausgabe: `{ status: "eindeutig" | "mehrdeutig" | "nicht_gefunden", treffer?: { gemeinde, kreis, land, mietstufe, quelle }, kandidaten?: [...] }`.
+Ausgabe: `{ status: "eindeutig" | "mehrdeutig" | "nicht_gefunden", treffer?: { gemeinde, kreis, land, mietstufe, quelle }, kandidaten?: [...] }`. Bei „mehrdeutig“ führt die Ausgabe zusätzlich `anzahl`, bei „nicht gefunden“ `aehnlich` (Plan E3, Ruling 8).
 
 ### `wohngeld_berechnen`
 
@@ -199,7 +201,7 @@ Später, je eigenes Design: Recht ab 01.01.2027 nach Verkündung (neue Rechtssta
 - Rundungsmodus der zehnten Nachkommastelle: geklärt in E1, Abschneiden (Länderfall 6b reproduziert alle vier Zwischenwerte).
 - Vermögensgrenze § 21 Nr. 3: konkrete Beträge stehen in der Verwaltungsvorschrift; nur aufnehmen, wenn öffentlich belegt, sonst als Hinweis statt Rechnung.
 - Grundrentenfreibetrag: belegt ist 281,50 €/Monat für 2025. Wert für 2026 prüfen, da er an der Regelbedarfsstufe 1 hängt.
-- Lizenz des Destatis-Gemeindeverzeichnisses.
+- Lizenz des Destatis-Gemeindeverzeichnisses: geklärt in E3 (`docs/quellen/2026-10-08-recherche-lizenz-gemeindeverzeichnis.md`). Quellenangabe ist Pflicht, abgeleitete Daten sind als verändert zu kennzeichnen; die MIT-Lizenz gilt nicht für `data/`.
 
 ## 9. Quellen
 
