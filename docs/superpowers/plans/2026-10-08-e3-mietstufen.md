@@ -14,9 +14,9 @@
 
 **Ausgangsstand:** Branch `bau/e3` im Worktree `~/Developer/worktrees/wohngeld-rechner-e3`, abgezweigt von `bau/e2` (e689e37). Vor dem Start: `npm ci`, dann `npx vitest run` 178/178 grün und `npx tsc --noEmit` ohne Ausgabe (am 08.10.2026 in einem frischen Export von e689e37 so gemessen). `bau/e0-e1` und `bau/e2` sind ungemergt; E3 baut auf beiden auf und ändert keine Datei dieser Etappen außer `scripts/gegentest.mjs`, `package.json`, `tsconfig.json`, `README.md` und einer Zeile der Spec.
 
-## Zur Abnahme vor dem Start: zwei offene Entscheidungen
+## Entscheidungen vor dem Start (entschieden 09.10.2026)
 
-Der Plan ist mit meinen Vorschlägen geschrieben. Weicht die Entscheidung ab, ändern sich nur die unten genannten Stellen.
+Der Nutzer hat am 09.10.2026 alle Vorschläge übernommen: (a) Basis 31.12.2020, (b) Option A Kreisstufe als gekennzeichnete Annahme, dazu Ruling 1 (Suche über die Namen des Verzeichnisses 31.12.2025, Stufe über den Schlüssel). Der Plan gilt unverändert. Die Abwägung bleibt zur Nachvollziehbarkeit stehen.
 
 ### (a) Basis-Gemeindeverzeichnis für die Zuordnung der Anlage
 
