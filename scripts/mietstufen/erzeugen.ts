@@ -95,6 +95,10 @@ export function erzeugeMietstufen(e: ErzeugenEingabe): ErzeugenErgebnis {
     const lc = LAND_ZU_KUERZEL.get(g.zeile.land ?? "") ?? "";
     const { verfahren, treffer } = findeKandidaten(g.zeile.name, e.aktuell.gemeinden.filter((x) => x.ags.startsWith(lc)));
     const neu = treffer[0];
+    if (treffer.length > 1) {
+      const liste = treffer.map((t) => `${t.name} (${t.ags})`).join(" ; ");
+      throw new Error(`Anlage-Gemeinde ${g.zeile.name} (${g.ags}) fehlt im aktuellen Verzeichnis, der Name ist im Land nicht eindeutig: ${liste}`);
+    }
     if (!verfahren || !neu) throw new Error(`Anlage-Gemeinde ${g.zeile.name} (${g.ags}) fehlt im aktuellen Verzeichnis und ist nicht über den Namen zu finden`);
     aliase.push({ von: g.ags, nach: neu.ags, name: g.zeile.name });
     gemeindeStufe.set(neu.ags, g.zeile.stufe);

@@ -144,6 +144,15 @@ describe("erzeugeMietstufen: kleine Fälle", () => {
     expect(() => erzeugeMietstufen(basis({ aktuell: gv([flensburg, klein]) }))).toThrow(/Handewitt/);
   });
 
+  it("Schlüsselwechsel mit zwei gleichnamigen Gemeinden im Land bricht ab und nennt beide Kandidaten, statt die erste zu nehmen", () => {
+    const zwei = [
+      { ags: "01059046", name: "Handewitt", textkennzeichen: "64", einwohner: 11000 },
+      { ags: "01060047", name: "Handewitt", textkennzeichen: "64", einwohner: 900 },
+    ];
+    const aktuell = gv([flensburg, klein, ...zwei]);
+    expect(() => erzeugeMietstufen(basis({ aktuell }))).toThrow(/Handewitt.*01059046.*01060047/s);
+  });
+
   it("nicht eindeutig zugeordnete Anlagezeilen werden aufgelistet und brechen ab", () => {
     expect(() => erzeugeMietstufen(basis({ anlage: [...anlage, { land: "Schleswig-Holstein", art: "gemeinde", name: "Atlantis", stufe: 4 }] }))).toThrow(/Atlantis/);
   });
