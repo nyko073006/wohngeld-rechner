@@ -138,6 +138,40 @@ describe("Ortssuche: mehrdeutig (Spec 3.3, Test 6)", () => {
   });
 });
 
+describe("Ortssuche: lockere Umlautsuche erfindet keinen eindeutigen Treffer (Endreview C-1)", () => {
+  // Ohne den Schutz wird aus der Eingabe „aue“ der lockere Schlüssel „au“ und aus „hochheim“ der Treffer „Höchheim“.
+  const lose = erzeugeSuche(
+    DATEN([
+      ["07138300", "Au", 4, "k"],
+      ["14729300", "Aue-Bad Schlema, Stadt", 1, "g"],
+      ["07138310", "Höchheim", 1, "k"],
+      ["06534300", "Hochheim am Main, Stadt", 5, "g"],
+    ]),
+  );
+
+  it("„Aue“ ist nicht eindeutig „Au“: Aue-Bad Schlema steht im Ergebnis", () => {
+    const e = lose({ gemeinde: "Aue" });
+    expect(e.status).not.toBe("eindeutig");
+    expect(namen(e)).toContain("Aue-Bad Schlema, Stadt");
+  });
+
+  it("„Hochheim“ ist nicht eindeutig „Höchheim“: Hochheim am Main steht als Vorschlag neben Höchheim", () => {
+    const e = lose({ gemeinde: "Hochheim" });
+    expect(e.status).toBe("nicht_gefunden");
+    expect(namen(e)).toEqual(["Hochheim am Main, Stadt", "Höchheim"].sort((a, b) => (a < b ? -1 : 1)));
+  });
+
+  it("ein Umlaut in der Eingabe wird nie zusätzlich gelockert: „Höchheim“ und „Hoechheim“ finden Höchheim, „Au“ findet Au", () => {
+    expect(eindeutig(lose({ gemeinde: "Höchheim" })).gemeinde).toBe("Höchheim");
+    expect(eindeutig(lose({ gemeinde: "Hoechheim" })).gemeinde).toBe("Höchheim");
+    expect(eindeutig(lose({ gemeinde: "Au" })).gemeinde).toBe("Au");
+  });
+
+  it("der Umlaut-Tippfehler bleibt ein Treffer, wenn kein Teilname dagegen spricht (Munchen)", () => {
+    expect(eindeutig(suche({ gemeinde: "Munchen" })).gemeinde).toBe("München, Landeshauptstadt");
+  });
+});
+
 describe("Ortssuche: nicht gefunden mit ähnlichen Namen", () => {
   it("Teilname ist nie ein eindeutiger Treffer, sondern ein Vorschlag", () => {
     const e = suche({ gemeinde: "Frankfurt am" });

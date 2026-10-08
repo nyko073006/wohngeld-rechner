@@ -118,10 +118,16 @@ export function erzeugeSuche(daten: MietstufenDaten): (eingabe: SuchEingabe) => 
       eingabe,
     );
 
-    // Lockere Umlautsuche („Munchen“): findet sie genau einen Ort oder mehrere, gilt sie wie ein Treffer.
-    const lose = filtere([...(locker.get(lockerSchluessel(q0)) ?? locker.get(lockerSchluessel(q1)) ?? [])], eingabe);
-    if (lose.length === 1 && lose[0]) return { status: "eindeutig", treffer: treffer(lose[0]) };
-    if (lose.length > 1) return mehrdeutig(lose);
+    // Lockere Umlautsuche („Munchen“ findet „München“). Der Index ist gelockert, die Eingabe nicht:
+    // „aue“ darf nicht zu „au“ werden. Ein lockerer Treffer ist nur eindeutig, wenn kein Teilname
+    // dagegen spricht („Hochheim“ ist nicht Höchheim, solange es Hochheim am Main gibt).
+    const lose = filtere([...(locker.get(q0) ?? locker.get(q1) ?? [])], eingabe);
+    if (lose.length === 1 && lose[0] && teilname.length === 0) return { status: "eindeutig", treffer: treffer(lose[0]) };
+    if (lose.length > 0) {
+      const zusammen = [...new Set([...lose, ...teilname])];
+      if (lose.length > 1) return mehrdeutig(zusammen);
+      return { status: "nicht_gefunden", aehnlich: geordnet(zusammen).slice(0, MAX_AEHNLICH).map(treffer) };
+    }
 
     if (teilname.length > 0) return { status: "nicht_gefunden", aehnlich: geordnet(teilname).slice(0, MAX_AEHNLICH).map(treffer) };
     const grenze = q1.length >= 5 ? ABSTAND_LANG : q1.length === 4 ? ABSTAND_KURZ : -1;

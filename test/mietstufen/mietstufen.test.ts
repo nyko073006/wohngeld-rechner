@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { MIETSTUFEN_DATEN, pruefeMietstufenDaten, sucheMietstufe } from "../../src/mietstufen/daten";
+import { vorKomma } from "../../src/mietstufen/normalisieren";
 import type { SuchEingabe, SuchErgebnis } from "../../src/mietstufen/typen";
 import { BMWSB_2025 } from "../fixtures/bmwsb-2025";
 
@@ -113,6 +114,17 @@ describe("Mietstufen: mehrdeutige Namen", () => {
     expect(e.status).toBe("mehrdeutig");
     expect(kandidaten(e).map((k) => `${k.kreis}:${k.mietstufe}`).sort()).toEqual(["Erding:5", "Mühldorf a.Inn:1", "München:2"]);
     expect(eindeutig(sucheMietstufe({ gemeinde: "Taufkirchen", kreis: "Landkreis München" })).mietstufe).toBe(2);
+  });
+});
+
+describe("Mietstufen: lockere Umlautsuche (Endreview C-1)", () => {
+  it("„Aue“ und „Hochheim“ liefern nicht eindeutig Au bzw. Höchheim", () => {
+    const aue = sucheMietstufe({ gemeinde: "Aue" });
+    expect(aue.status).not.toBe("eindeutig");
+    expect(kandidaten(aue).map((k) => k.gemeinde)).toContain("Aue-Bad Schlema, Stadt");
+    const hochheim = sucheMietstufe({ gemeinde: "Hochheim" });
+    expect(hochheim.status).not.toBe("eindeutig");
+    expect(kandidaten(hochheim).map((k) => k.gemeinde)).toContain("Hochheim am Main, Stadt");
   });
 });
 
