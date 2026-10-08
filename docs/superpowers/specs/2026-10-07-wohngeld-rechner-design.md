@@ -112,7 +112,7 @@ Regeln:
 - Gemeinden unter 10.000 Einwohnern bekommen die Stufe ihres Kreises (Anlage, Vorbemerkung).
 - Inseln ohne Festlandanschluss nach § 12 Abs. 4a: Stufe V.
 - Gleiche Namen für Stadt und Kreis (Leipzig, München) und mehrfach vorkommende Gemeindenamen (Neustadt) werden über Kreis und Land unterschieden.
-- Gebietsstand der Liste ist der 31.03.2021, das Gemeindeverzeichnis ist neuer. Gemeinden, die das Skript nicht zuordnen kann, werden aufgelistet und von Hand entschieden, nicht verworfen.
+- Gebietsstand der Anlage ist der 31.03.2021. Die Zuordnung läuft über das Gemeindeverzeichnis 31.12.2020, die Suche über die Namen des Verzeichnisses 31.12.2025 (siehe unten). Zeilen der Anlage, die das Skript nicht zuordnen kann, werden aufgelistet und von Hand entschieden (Handzuordnung), nicht verworfen.
 
 Basis der Zuordnung ist das Gemeindeverzeichnis 31.12.2020, weil der Gebietsstand der Anlage (31.03.2021) bei Destatis nicht mehr abrufbar ist (Entscheidung des Auftraggebers vom 09.10.2026); die Zuordnung ist gegen beide Stände gleich. Die Suche läuft über die Namen des Verzeichnisses 31.12.2025. Gemeinden, die im Basisverzeichnis fehlen, erhalten die Kreisstufe als gekennzeichnete Annahme.
 
