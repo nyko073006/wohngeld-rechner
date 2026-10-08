@@ -126,6 +126,12 @@ export function berechneJahreseinkommen(rs: Rechtsstand, m: MitgliedEingabe, ind
   // § 14 Abs. 2 Nr. 19 Buchst. b WoGG.
   const zuwendung = posten("Zuwendungen Dritter", D.max(0, jahr(summeArt("zuwendung_dritter")).minus(w.zuwendungDritterFrei)));
 
+  // § 14 Abs. 2 Nr. 19 Buchst. a und Nr. 20 Buchst. a WoGG: Beträge für eine Pflegeperson bleiben frei, der Rechner zieht sie nicht ab.
+  if (m.einnahmen.some((e) => e.art === "unterhalt" || e.art === "zuwendung_dritter"))
+    annahmen.push(
+      "Unterhalt und Zuwendungen ohne Abzug für eine Pflegeperson angesetzt; bis 6.540 € im Jahr dafür bleiben frei (§ 14 Abs. 2 Nr. 19 Buchst. a, Nr. 20 Buchst. a WoGG) und sind hier vorher abzuziehen.",
+    );
+
   // § 14 Abs. 2 Nr. 6, 11, 19, 20, 21 und Nummern aus NUMMERN_VOLL: voll.
   const zuschlaege = jahr(summeArt("zuschlaege_3b"));
   const voll = posten(

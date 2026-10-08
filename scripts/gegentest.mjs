@@ -43,6 +43,13 @@ const MUTATIONEN = [
     alt: 'mitglieder.every((m) => m.ausschluss === "sgb8_kdu")',
     neu: "true",
   },
+  {
+    name: "Titel ignoriert",
+    datei: "src/engine/einkommen/gesamteinkommen.ts",
+    alt: "u.tituliert ? jahresbetrag : D.min(jahresbetrag, grenze)",
+    neu: "D.min(jahresbetrag, grenze)",
+  },
+  { name: "Elterngeld Plus ohne Halbierung", datei: "src/engine/einkommen/jahreseinkommen.ts", alt: "dividedBy(plus ? 2 : 1)", neu: "dividedBy(1)" },
   { name: "Zuschlagsdeckel nach Mindestwert", datei: "src/engine/formel.ts", alt: "mRoh.toDecimalPlaces(0, D.ROUND_DOWN)", neu: "M.toDecimalPlaces(0, D.ROUND_DOWN)" },
   { name: "Anteil-Schritt fehlt", datei: "src/engine/miete.ts", alt: "if (!anteil.equals(1))", neu: "if (false)" },
 ];

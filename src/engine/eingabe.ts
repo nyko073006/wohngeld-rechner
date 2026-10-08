@@ -65,7 +65,7 @@ export interface MitgliedEingabe {
 export interface UnterhaltZahlung {
   art: UnterhaltArt;
   betragMonatlich: number;
-  tituliert?: boolean; // § 18 Satz 2: Titel, notarielle Vereinbarung oder Bescheid
+  tituliert?: boolean; // § 18 Satz 2: Titel, notarielle Vereinbarung oder Bescheid; betragMonatlich höchstens der festgelegte Betrag (§ 18 Satz 2: „bis zu dem darin festgelegten Betrag“)
 }
 
 export interface HaushaltEingabe {

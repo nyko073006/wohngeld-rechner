@@ -83,6 +83,12 @@ describe("Jahreseinkommen: Einnahmen nach § 14 Abs. 2 WoGG", () => {
   it("§ 14 Abs. 2 Nr. 19 und 20 WoGG: Unterhalt voll", () => {
     expect(jahr([{ art: "unterhalt", betragMonatlich: 400 }])).toBe("4800.00");
   });
+  it("§ 14 Abs. 2 Nr. 19 Buchst. a, Nr. 20 Buchst. a WoGG: Annahme zur Pflegeperson bei Unterhalt und Zuwendungen", () => {
+    const text = "Unterhalt und Zuwendungen ohne Abzug für eine Pflegeperson angesetzt; bis 6.540 € im Jahr dafür bleiben frei (§ 14 Abs. 2 Nr. 19 Buchst. a, Nr. 20 Buchst. a WoGG) und sind hier vorher abzuziehen.";
+    expect(rechne([{ art: "unterhalt", betragMonatlich: 400 }]).annahmen).toContain(text);
+    expect(rechne([{ art: "zuwendung_dritter", betragMonatlich: 50 }]).annahmen).toContain(text);
+    expect(rechne([{ art: "rente", betragMonatlich: 400 }]).annahmen).not.toContain(text);
+  });
   it("§ 14 Abs. 2 Nr. 19 Buchst. b WoGG: Zuwendungen Dritter über 480 € im Jahr", () => {
     expect(jahr([{ art: "zuwendung_dritter", betragMonatlich: 50 }])).toBe("120.00");
     expect(jahr([{ art: "zuwendung_dritter", betragMonatlich: 30 }])).toBe("0.00");
