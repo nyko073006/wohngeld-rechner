@@ -128,6 +128,13 @@ describe("erzeugeMietstufen: kleine Fälle", () => {
     ]);
   });
 
+  it("Insel vor Anlagezeile: eine Insel-Gemeinde mit eigener Gemeindezeile bekommt die Inselstufe und Herkunft i", () => {
+    // Handewitt hat in der Anlage Stufe 2 (Gemeindezeile). Ist sie zugleich Insel (Stufe 5), gilt § 12 Abs. 4a WoGG.
+    const { daten: d } = erzeugeMietstufen(basis({ inseln: [{ gesetz: "Handewitt", ags: "01059045" }] }));
+    expect(d.gemeinden.find((g) => g[0] === "01059045")).toEqual(["01059045", "Handewitt", 5, "i"]);
+    expect(d.meta.anzahl.je_herkunft).toEqual({ g: 1, k: 1, i: 1, n: 0 });
+  });
+
   it("Gemeinde, die im Basisverzeichnis fehlt, bekommt Kreisstufe und Herkunft n", () => {
     const neu = { ags: "01059999", name: "Neuort", textkennzeichen: "64", einwohner: 800 };
     const { daten: d } = erzeugeMietstufen(basis({ aktuell: gv([flensburg, handewitt, klein, neu]) }));
