@@ -1,8 +1,8 @@
 // Namensvergleich für die Ortssuche. Rein, ohne Node-Abhängigkeit (läuft auf Workers).
 
 // Wortgrenzen über Unicode-Klassen, weil \b Umlaute nicht kennt.
-const ANFANG = "(?<![\\p{L}\\p{N}_])";
-const ENDE = "(?![\\p{L}\\p{N}_])";
+export const ANFANG = "(?<![\\p{L}\\p{N}_])";
+export const ENDE = "(?![\\p{L}\\p{N}_])";
 
 // Abkürzungen aus dem Gemeindeverzeichnis („a.d.Isar“, „i.d.OPf.“, „Bay.“) werden aufgelöst,
 // damit „Landau an der Isar“ und „Landau a.d.Isar, St“ denselben Schlüssel haben. „am/im“ und
@@ -60,7 +60,7 @@ export const ohneTitel = (schluessel: string): string =>
     .filter((t) => !TITEL.has(t))
     .join(" ");
 
-const vorKomma = (s: string): string => s.split(",")[0] ?? "";
+export const vorKomma = (s: string): string => s.split(",")[0] ?? "";
 const ohneKlammer = (s: string): string => s.replace(/\([^)]*\)/g, " ");
 const vorSchraegstrich = (s: string): string => s.split("/")[0] ?? "";
 

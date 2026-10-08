@@ -1,5 +1,6 @@
 import type { AnlageZeile } from "./anlage";
 import type { Gv, GvGemeinde, GvKreis } from "./gv";
+import { ANFANG, ENDE, vorKomma } from "../../src/mietstufen/normalisieren";
 
 // Verknüpfung der Anlage-Zeilen (nur Name und Stufe) mit dem Gemeindeverzeichnis (AGS, Kreisschlüssel).
 // Die Anlage nennt weder Schlüssel noch Kreiszugehörigkeit. Die Zuordnung läuft in Stufen vom
@@ -88,10 +89,6 @@ const kleinOhneUmlaut = (s: string): string =>
     .normalize("NFKD")
     .replace(/\p{M}/gu, "");
 
-// JavaScript-\b kennt keine Umlaute; deshalb Wortgrenzen über Unicode-Klassen.
-const ANFANG = "(?<![\\p{L}\\p{N}_])";
-const ENDE = "(?![\\p{L}\\p{N}_])";
-
 type Abkuerzung = readonly [muster: string, ersatz: string, wortEnde?: true];
 
 function regeln(liste: readonly Abkuerzung[]): [RegExp, string][] {
@@ -116,8 +113,6 @@ const REGELN_B = regeln([
   ["rhld\\.?", "rheinland"], ["westf\\.?", "westfalen"], ["ufr\\.?", "unterfranken"], ["vogtl\\.?", "vogtland"],
   ["erzgeb\\.?", "erzgebirge"], ["oldb\\.?", "oldenburg"], ["st\\.\\s*", "sankt "], ["sankt", "sankt", true],
 ]);
-
-const vorKomma = (s: string): string => s.split(",")[0] ?? "";
 
 function endschluessel(s: string): string {
   return s.replace(/an der/g, "ander").replace(/in der/g, "inder").replace(/[^a-z0-9]/g, "");
