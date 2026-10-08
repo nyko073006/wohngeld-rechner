@@ -47,8 +47,11 @@ export function pruefeAusschluss(rs: Rechtsstand, mitglieder: MitgliedEingabe[],
   if (vermoegen !== undefined && (typeof vermoegen !== "number" || !Number.isFinite(vermoegen) || vermoegen < 0))
     throw new EingabeFehler("vermoegen", "muss eine Zahl ab 0 sein");
 
-  const ausgeschlossen = mitglieder.flatMap((m, index) => (m.ausschluss ? [{ index, leistung: m.ausschluss, norm: NORM[m.ausschluss] }] : []));
-  const zuBeruecksichtigen = mitglieder.flatMap((m, index) => (m.ausschluss ? [] : [index]));
+  // § 7 Abs. 1 Satz 1 Nr. 9 WoGG: SGB VIII nur in Haushalten, zu denen ausschließlich Personen gehören, die diese Leistungen empfangen.
+  const sgb8Wirkt = mitglieder.every((m) => m.ausschluss === "sgb8_kdu");
+  const schliesstAus = (m: MitgliedEingabe): boolean => m.ausschluss !== undefined && (m.ausschluss !== "sgb8_kdu" || sgb8Wirkt);
+  const ausgeschlossen = mitglieder.flatMap((m, index) => (schliesstAus(m) && m.ausschluss ? [{ index, leistung: m.ausschluss, norm: NORM[m.ausschluss] }] : []));
+  const zuBeruecksichtigen = mitglieder.flatMap((m, index) => (schliesstAus(m) ? [] : [index]));
   const schritte: Rechenschritt[] = [
     {
       schritt: "Zu berücksichtigende Haushaltsmitglieder",
@@ -65,6 +68,10 @@ export function pruefeAusschluss(rs: Rechtsstand, mitglieder: MitgliedEingabe[],
   if (ausgeschlossen.length > 0)
     hinweise.push(
       "Ausgeschlossen ist ein Mitglied nur, wenn bei der Leistung Kosten der Unterkunft berücksichtigt wurden (§ 7 Abs. 1 Satz 1 und 2 WoGG). Kein Ausschluss auch, wenn die Leistung nur als Darlehen gezahlt wird oder Wohngeld die Hilfebedürftigkeit vermeidet oder beseitigt (§ 7 Abs. 1 Satz 3 WoGG). Dann das Mitglied ohne Ausschluss angeben.",
+    );
+  if (!sgb8Wirkt && mitglieder.some((m) => m.ausschluss === "sgb8_kdu"))
+    hinweise.push(
+      "Leistungen nach SGB VIII schließen nur aus, wenn alle Haushaltsmitglieder sie beziehen (§ 7 Abs. 1 Satz 1 Nr. 9 WoGG). Die halbe Pauschale zählt dann als Einkommen: als sonstige_haelfte mit Nummer 24 (Kind) bzw. 25 (Pflegeperson) eintragen.",
     );
 
   if (zuBeruecksichtigen.length === 0)

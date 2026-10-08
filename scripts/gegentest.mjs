@@ -36,7 +36,13 @@ const MUTATIONEN = [
   { name: "Negative Einkünfte verrechnet", datei: "src/engine/einkommen/jahreseinkommen.ts", alt: "if (x.isNegative())", neu: "if (false)" },
   { name: "Hälfte nach § 14 Abs. 2 voll", datei: "src/engine/einkommen/jahreseinkommen.ts", alt: ".dividedBy(2));", neu: ".dividedBy(1));" },
   { name: "Y ein Zwölftel", datei: "src/engine/einkommen/gesamteinkommen.ts", alt: "gesamteinkommen.dividedBy(12)", neu: "gesamteinkommen.dividedBy(11)" },
-  { name: "Ausschluss ignoriert", datei: "src/engine/ausschluss.ts", alt: "(m.ausschluss ? [] : [index])", neu: "[index]" },
+  { name: "Ausschluss ignoriert", datei: "src/engine/ausschluss.ts", alt: "(schliesstAus(m) ? [] : [index])", neu: "[index]" },
+  {
+    name: "SGB VIII je Mitglied statt je Haushalt",
+    datei: "src/engine/ausschluss.ts",
+    alt: 'mitglieder.every((m) => m.ausschluss === "sgb8_kdu")',
+    neu: "true",
+  },
   { name: "Zuschlagsdeckel nach Mindestwert", datei: "src/engine/formel.ts", alt: "mRoh.toDecimalPlaces(0, D.ROUND_DOWN)", neu: "M.toDecimalPlaces(0, D.ROUND_DOWN)" },
   { name: "Anteil-Schritt fehlt", datei: "src/engine/miete.ts", alt: "if (!anteil.equals(1))", neu: "if (false)" },
 ];

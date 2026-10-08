@@ -40,6 +40,24 @@ describe("pruefeAusschluss: § 7 WoGG", () => {
   });
 });
 
+describe("pruefeAusschluss: SGB VIII nur im reinen SGB-VIII-Haushalt", () => {
+  it("§ 7 Abs. 1 Satz 1 Nr. 9 WoGG: SGB VIII schließt nicht aus, wenn nicht alle Mitglieder es beziehen", () => {
+    const r = pruefeAusschluss(WOGG_2025, [frei(), frei(), mit("sgb8_kdu")]);
+    expect(r.zuBeruecksichtigen).toEqual([0, 1, 2]);
+    expect(r.ausgeschlossen).toEqual([]);
+    expect(r.grund).toBeUndefined();
+    expect(r.hinweise.join(" ")).toContain("§ 7 Abs. 1 Satz 1 Nr. 9");
+    expect(r.hinweise).toContain(
+      "Leistungen nach SGB VIII schließen nur aus, wenn alle Haushaltsmitglieder sie beziehen (§ 7 Abs. 1 Satz 1 Nr. 9 WoGG). Die halbe Pauschale zählt dann als Einkommen: als sonstige_haelfte mit Nummer 24 (Kind) bzw. 25 (Pflegeperson) eintragen.",
+    );
+  });
+  it("§ 7 Abs. 1 Satz 1 Nr. 9 WoGG: beziehen alle Mitglieder SGB VIII, sind alle ausgeschlossen", () => {
+    const r = pruefeAusschluss(WOGG_2025, [mit("sgb8_kdu"), mit("sgb8_kdu")]);
+    expect(r.zuBeruecksichtigen).toEqual([]);
+    expect(r.grund?.code).toBe("alle_ausgeschlossen");
+  });
+});
+
 describe("pruefeAusschluss: Vermögen § 21 Nr. 3 WoGG, WoGVwV 21.37", () => {
   it("genau an der Grenze kein Ausschluss, darüber Ausschluss (1 Mitglied, 60.000 €)", () => {
     expect(pruefeAusschluss(WOGG_2025, [frei()], 60000).grund).toBeUndefined();
