@@ -1,0 +1,30 @@
+{
+  "anlage": {
+    "datei": "anlage.html",
+    "titel": "Anlage (zu § 1 Absatz 3) Mietenstufen der Gemeinden nach Ländern ab 1. Januar 2023, WoGV",
+    "url": "https://www.gesetze-im-internet.de/wogv/anlage.html",
+    "abruf": "2026-10-08",
+    "sha256": "e71af5b96726aedab6761741cff53d4029f2652af6e21e0400cf9f1a340c906b"
+  },
+  "wogg_12": {
+    "datei": "wogg-12.html",
+    "titel": "§ 12 WoGG, Höchstbeträge für Miete und Belastung (Abs. 4a: Inseln ohne Festlandanschluss)",
+    "url": "https://www.gesetze-im-internet.de/wogg/__12.html",
+    "abruf": "2026-10-08",
+    "sha256": "feb04fe970a5123b0de4cf306e50224cc40e5cec7c60021e601257e30b9a81fc"
+  },
+  "gv_basis": {
+    "datei": "gv-31122020.xlsx",
+    "titel": "Gemeindeverzeichnis, Auszug GV, Gebietsstand 31.12.2020",
+    "url": "https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/Administrativ/Archiv/GVAuszugJ/31122020_Auszug_GV.xlsx?__blob=publicationFile",
+    "abruf": "2026-10-08",
+    "sha256": "6027130dd43b40593aacdf60ca161c17cb2148cc07dd013518f34d2f37dff6de"
+  },
+  "gv_aktuell": {
+    "datei": "gv-31122025.xlsx",
+    "titel": "Gemeindeverzeichnis, Auszug GV, Gebietsstand 31.12.2025",
+    "url": "https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/Administrativ/Archiv/GVAuszugJ/31122025_Auszug_GV.xlsx?__blob=publicationFile",
+    "abruf": "2026-10-08",
+    "sha256": "5bfb8b7a5ce0dc65988ff30b28146ec2f08dd0b29756c9c8c427cbd7baa00e79"
+  }
+}
