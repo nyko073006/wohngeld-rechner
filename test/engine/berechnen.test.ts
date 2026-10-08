@@ -130,6 +130,15 @@ describe("berechneWohngeld: Annahmen und Fehler", () => {
   it("leerer Haushalt ergibt EingabeFehler", () => {
     expect(() => berechneWohngeld(beispiel(1, { mitglieder: [] }))).toThrow(EingabeFehler);
   });
+  it("Eingabe kein Objekt ergibt EingabeFehler am Feld eingabe", () => {
+    let feld = "";
+    try {
+      berechneWohngeld(null as never);
+    } catch (e) {
+      if (e instanceof EingabeFehler) feld = e.feld;
+    }
+    expect(feld).toBe("eingabe");
+  });
   it("unbekannte Art ergibt EingabeFehler", () => {
     expect(() => berechneWohngeld(beispiel(1, { art: "wohnbeihilfe" as never }))).toThrow(EingabeFehler);
   });

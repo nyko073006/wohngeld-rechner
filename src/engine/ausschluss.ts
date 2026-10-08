@@ -1,7 +1,7 @@
 import type { Rechtsstand } from "../rechtsstand";
 import { D, type Dezimal } from "./dezimal";
 import { AUSSCHLUSS_LEISTUNGEN, type AusschlussLeistung, type MitgliedEingabe } from "./eingabe";
-import { type Ausschlussgrund, EingabeFehler, type Rechenschritt } from "./rechenweg";
+import { type Ausschlussgrund, EingabeFehler, pruefeObjekt, type Rechenschritt } from "./rechenweg";
 
 const NORM: Record<AusschlussLeistung, string> = {
   grundsicherungsgeld_sgb2: "§ 7 Abs. 1 Satz 1 Nr. 1 WoGG",
@@ -41,6 +41,7 @@ export interface AusschlussErgebnis {
 export function pruefeAusschluss(rs: Rechtsstand, mitglieder: MitgliedEingabe[], vermoegen?: number): AusschlussErgebnis {
   if (!Array.isArray(mitglieder) || mitglieder.length === 0) throw new EingabeFehler("mitglieder", "mindestens ein Haushaltsmitglied angeben");
   mitglieder.forEach((m, i) => {
+    pruefeObjekt(m, `mitglieder[${i}]`);
     if (m.ausschluss !== undefined && !AUSSCHLUSS_LEISTUNGEN.includes(m.ausschluss))
       throw new EingabeFehler(`mitglieder[${i}].ausschluss`, `unbekannte Leistung: ${String(m.ausschluss)}`);
   });

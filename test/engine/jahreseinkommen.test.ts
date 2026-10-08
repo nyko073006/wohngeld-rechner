@@ -149,6 +149,17 @@ describe("Jahreseinkommen: unmögliche Eingaben", () => {
   it("unbekannte Art", () => {
     expect(fehlerFeld(() => jahr([{ art: "kindergeld" as never, betragMonatlich: 250 }]))).toBe("mitglieder[0].einnahmen[0].art");
   });
+  it.each(["schwerbehindert", "nsVerfolgt", "kindUnter25", "grundrentenzeiten33"] as const)("Merkmal %s muss ein Wahrheitswert sein", (merkmal) => {
+    expect(fehlerFeld(() => jahr([], { [merkmal]: "false" } as unknown as Partial<MitgliedEingabe>))).toBe(`mitglieder[0].${merkmal}`);
+  });
+  it("elterngeldPlus muss ein Wahrheitswert sein", () => {
+    expect(fehlerFeld(() => jahr([{ art: "elterngeld", betragMonatlich: 300, elterngeldPlus: "true" as never }]))).toBe(
+      "mitglieder[0].einnahmen[0].elterngeldPlus",
+    );
+  });
+  it("Einnahme in der Liste kein Objekt", () => {
+    expect(fehlerFeld(() => jahr([null as never]))).toBe("mitglieder[0].einnahmen[0]");
+  });
   it("fehlende Angabe zu § 16", () => {
     expect(
       fehlerFeld(() => berechneJahreseinkommen(WOGG_2025, { einnahmen: [], zahltKvPv: false, zahltRv: false } as unknown as MitgliedEingabe, 0)),

@@ -25,6 +25,15 @@ function ausHaushalt(h: HaushaltEingabe) {
 function rechne(mitglieder: MitgliedEingabe[], extra: { alleinerziehend?: boolean; unterhaltGezahlt?: UnterhaltZahlung[] } = {}) {
   return berechneGesamteinkommen({ rechtsstand: WOGG_2025, mitglieder: mitglieder.map((mitglied, index) => ({ index, mitglied })), ...extra });
 }
+function fehlerFeld(f: () => unknown): string {
+  try {
+    f();
+  } catch (e) {
+    if (e instanceof EingabeFehler) return e.feld;
+    throw e;
+  }
+  throw new Error("kein Fehler geworfen");
+}
 const y = (mitglieder: MitgliedEingabe[], extra?: Parameters<typeof rechne>[1]) => rechne(mitglieder, extra).y.toFixed(2);
 const rentner = (betrag: number, extra: Partial<MitgliedEingabe> = {}): MitgliedEingabe => ({
   einnahmen: [{ art: "rente", betragMonatlich: betrag }],
@@ -96,6 +105,18 @@ describe("berechneGesamteinkommen: Unterhaltsabzug (§ 18 WoGG)", () => {
       if (e instanceof EingabeFehler) feld = e.feld;
     }
     expect(feld).toBe("unterhaltGezahlt[0].art");
+  });
+});
+
+describe("berechneGesamteinkommen: unmögliche Eingaben", () => {
+  it("alleinerziehend muss ein Wahrheitswert sein", () => {
+    expect(fehlerFeld(() => rechne([rentner(1000)], { alleinerziehend: "nein" as never }))).toBe("alleinerziehend");
+  });
+  it("unterhaltGezahlt muss eine Liste sein", () => {
+    expect(fehlerFeld(() => rechne([rentner(1000)], { unterhaltGezahlt: {} as never }))).toBe("unterhaltGezahlt");
+  });
+  it("Unterhaltszahlung in der Liste kein Objekt", () => {
+    expect(fehlerFeld(() => rechne([rentner(1000)], { unterhaltGezahlt: [null as never] }))).toBe("unterhaltGezahlt[0]");
   });
 });
 

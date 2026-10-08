@@ -86,6 +86,9 @@ describe("pruefeAusschluss: unmögliche Eingaben", () => {
   it("unbekannte Leistung", () => {
     expect(fehlerFeld(() => pruefeAusschluss(WOGG_2025, [mit("buergergeld" as never)]))).toBe("mitglieder[0].ausschluss");
   });
+  it("Listenelement kein Objekt", () => {
+    expect(fehlerFeld(() => pruefeAusschluss(WOGG_2025, [frei(), null as never]))).toBe("mitglieder[1]");
+  });
   it("negatives Vermögen", () => {
     expect(fehlerFeld(() => pruefeAusschluss(WOGG_2025, [frei()], -1))).toBe("vermoegen");
   });

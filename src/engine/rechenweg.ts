@@ -12,6 +12,14 @@ export interface Ausschlussgrund {
   text: string;
 }
 
+export function pruefeOptionalBool(wert: unknown, feld: string): void {
+  if (wert !== undefined && typeof wert !== "boolean") throw new EingabeFehler(feld, "muss ja oder nein sein (true oder false)");
+}
+
+export function pruefeObjekt(wert: unknown, feld: string): void {
+  if (wert === null || typeof wert !== "object" || Array.isArray(wert)) throw new EingabeFehler(feld, "muss ein Objekt sein");
+}
+
 export class EingabeFehler extends Error {
   constructor(
     public readonly feld: string,

@@ -1,7 +1,7 @@
 import { type Rechtsstand, UNTERHALT_ARTEN } from "../../rechtsstand";
 import { D, type Dezimal } from "../dezimal";
 import type { MitgliedEingabe, UnterhaltZahlung } from "../eingabe";
-import { EingabeFehler, type Rechenschritt } from "../rechenweg";
+import { EingabeFehler, pruefeObjekt, pruefeOptionalBool, type Rechenschritt } from "../rechenweg";
 import { berechneJahreseinkommen, type MitgliedEinkommen } from "./jahreseinkommen";
 
 export interface EinkommenEingabe {
@@ -25,6 +25,7 @@ export interface EinkommenErgebnis {
 }
 
 function pruefeUnterhalt(u: UnterhaltZahlung, feld: string): void {
+  pruefeObjekt(u, feld);
   if (!UNTERHALT_ARTEN.includes(u.art)) throw new EingabeFehler(`${feld}.art`, `erwartet: ${UNTERHALT_ARTEN.join(", ")}`);
   if (typeof u.betragMonatlich !== "number" || !Number.isFinite(u.betragMonatlich) || u.betragMonatlich < 0)
     throw new EingabeFehler(`${feld}.betragMonatlich`, "muss eine Zahl ab 0 sein");
@@ -33,6 +34,8 @@ function pruefeUnterhalt(u: UnterhaltZahlung, feld: string): void {
 
 // § 13 WoGG: Summe der Jahreseinkommen minus Freibeträge (§§ 17, 17a) und Unterhaltsabzüge (§ 18); Y = ein Zwölftel.
 export function berechneGesamteinkommen(e: EinkommenEingabe): EinkommenErgebnis {
+  pruefeOptionalBool(e.alleinerziehend, "alleinerziehend");
+  if (e.unterhaltGezahlt !== undefined && !Array.isArray(e.unterhaltGezahlt)) throw new EingabeFehler("unterhaltGezahlt", "muss eine Liste sein");
   const w = e.rechtsstand.einkommen;
   const ergebnisse = e.mitglieder.map(({ index, mitglied }) => berechneJahreseinkommen(e.rechtsstand, mitglied, index));
   const summe = ergebnisse.reduce((s, r) => s.plus(r.jahreseinkommen), new D(0));

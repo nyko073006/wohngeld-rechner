@@ -4,7 +4,7 @@ import type { HaushaltEingabe } from "./eingabe";
 import { berechneGesamteinkommen } from "./einkommen/gesamteinkommen";
 import { berechneFormel } from "./formel";
 import { berechneMiete } from "./miete";
-import { type Ausschlussgrund, EingabeFehler, type Rechenschritt } from "./rechenweg";
+import { type Ausschlussgrund, EingabeFehler, pruefeObjekt, type Rechenschritt } from "./rechenweg";
 
 export const HINWEIS_UNVERBINDLICH = "Unverbindliche Schätzung. Über den Anspruch entscheidet die Wohngeldbehörde.";
 
@@ -25,6 +25,7 @@ const eindeutig = (liste: string[]): string[] => [...new Set(liste)];
 
 // Gesamtablauf: Rechtsstand → Ausschluss (§§ 7, 21) → Einkommen (§§ 13 bis 18) → Miete (§§ 11, 12) → Formel (§ 19).
 export function berechneWohngeld(e: HaushaltEingabe): Berechnung {
+  pruefeObjekt(e, "eingabe");
   const rs = rechtsstandFuer(e.stichtag);
   if (e.art !== "mietzuschuss" && e.art !== "lastenzuschuss") throw new EingabeFehler("art", "mietzuschuss oder lastenzuschuss");
   const rechenweg: Rechenschritt[] = [

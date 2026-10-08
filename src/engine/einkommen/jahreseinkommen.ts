@@ -1,7 +1,7 @@
 import type { Rechtsstand } from "../../rechtsstand";
 import { D, type Dezimal } from "../dezimal";
 import { EINNAHME_ARTEN, type Einnahme, type EinnahmeArt, type MitgliedEingabe, NUMMERN_HAELFTE, NUMMERN_VOLL } from "../eingabe";
-import { EingabeFehler, type Rechenschritt } from "../rechenweg";
+import { EingabeFehler, pruefeObjekt, pruefeOptionalBool, type Rechenschritt } from "../rechenweg";
 
 export interface MitgliedEinkommen {
   summe: Dezimal; // Betrag nach §§ 14, 15, jährlich, vor § 16
@@ -23,6 +23,7 @@ function pruefeBetrag(wert: unknown, feld: string, negativErlaubt = false): void
 }
 
 function pruefeEinnahme(e: Einnahme, feld: string): void {
+  pruefeObjekt(e, feld);
   if (!EINNAHME_ARTEN.includes(e.art)) throw new EingabeFehler(`${feld}.art`, `unbekannte Einnahmeart: ${String(e.art)}`);
   pruefeBetrag(e.betragMonatlich, `${feld}.betragMonatlich`, DARF_NEGATIV.includes(e.art));
   if (e.werbungskostenMonatlich !== undefined) {
@@ -36,6 +37,7 @@ function pruefeEinnahme(e: Einnahme, feld: string): void {
   }
   if (e.elterngeldPlus !== undefined && e.art !== "elterngeld")
     throw new EingabeFehler(`${feld}.elterngeldPlus`, "nur bei elterngeld");
+  pruefeOptionalBool(e.elterngeldPlus, `${feld}.elterngeldPlus`);
   const liste = e.art === "sonstige_voll" ? NUMMERN_VOLL : e.art === "sonstige_haelfte" ? NUMMERN_HAELFTE : null;
   if (liste && (e.nummer === undefined || !liste.includes(e.nummer)))
     throw new EingabeFehler(`${feld}.nummer`, `Nummer aus § 14 Abs. 2 WoGG erwartet: ${liste.join(", ")}`);
@@ -43,9 +45,11 @@ function pruefeEinnahme(e: Einnahme, feld: string): void {
 }
 
 function pruefeMitglied(m: MitgliedEingabe, feld: string): void {
+  pruefeObjekt(m, feld);
   if (!Array.isArray(m.einnahmen)) throw new EingabeFehler(`${feld}.einnahmen`, "muss eine Liste sein");
   for (const k of ["zahltSteuern", "zahltKvPv", "zahltRv"] as const)
     if (typeof m[k] !== "boolean") throw new EingabeFehler(`${feld}.${k}`, "muss angegeben sein (ja oder nein), jede Angabe macht 10 % aus");
+  for (const k of ["schwerbehindert", "nsVerfolgt", "kindUnter25", "grundrentenzeiten33"] as const) pruefeOptionalBool(m[k], `${feld}.${k}`);
   m.einnahmen.forEach((e, i) => pruefeEinnahme(e, `${feld}.einnahmen[${i}]`));
 }
 
