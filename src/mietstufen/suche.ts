@@ -58,7 +58,10 @@ export function erzeugeSuche(daten: MietstufenDaten): (eingabe: SuchEingabe) => 
     if (liste) liste.push(e);
     else m.set(k, [e]);
   };
+  // Gemeinden mit eigener Anlagezeile (Herkunft g, also ab 10.000 Einwohnern), nach dem ersten Wort ihres Namens.
+  const grosseNachWort = new Map<string, Eintrag[]>();
   for (const e of eintraege) {
+    if (e.herkunft === "g") for (const wort of new Set(e.stark.map((k) => k.split(" ")[0] ?? ""))) eintragen(grosseNachWort, wort, e);
     for (const k of e.stark) eintragen(stark, k, e);
     for (const k of e.schwach) eintragen(schwach, k, e);
     for (const k of [...e.stark, ...e.schwach]) {
@@ -94,16 +97,24 @@ export function erzeugeSuche(daten: MietstufenDaten): (eingabe: SuchEingabe) => 
     const q1 = ohneTitel(q0);
     const anfragen = [...new Set([q0, q1])].filter((q) => q !== "");
 
+    const wortAnfang = (e: Eintrag): boolean => e.stark.some((k) => k.startsWith(`${q1} `));
     const gefunden = new Set<Eintrag>();
+    let starkGefunden = false;
     for (const q of anfragen) {
-      for (const e of stark.get(q) ?? []) gefunden.add(e);
+      for (const e of stark.get(q) ?? []) {
+        gefunden.add(e);
+        starkGefunden = true;
+      }
       for (const e of schwach.get(q) ?? []) gefunden.add(e);
     }
+    // Exakter Kurzname („Esslingen“ ist ein Dorf in der Eifel): Eine Stadt mit eigener Anlagezeile, deren Name mit
+    // der Eingabe als ganzem Wort beginnt („Esslingen am Neckar“), kommt dazu. Dann ist das Ergebnis mehrdeutig,
+    // statt still das kleine Dorf zu liefern. Land und Kreis filtern danach.
+    if (starkGefunden) for (const e of grosseNachWort.get(q1.split(" ")[0] ?? "") ?? []) if (wortAnfang(e)) gefunden.add(e);
     let liste = filtere([...gefunden], eingabe);
     // Nur über den Klammerzusatz oder Schrägstrich gefunden („Frankfurt“ -> Frankfurt (Oder)):
-    // Gemeinden, deren Name mit der Eingabe beginnt, gehören dazu („Frankfurt am Main“).
+    // Gemeinden, deren Name mit der Eingabe beginnt, gehören dazu („Frankfurt am Main“), auch ohne eigene Anlagezeile.
     const hatStarkenTreffer = liste.some((e) => e.stark.some((k) => anfragen.includes(k)));
-    const wortAnfang = (e: Eintrag): boolean => e.stark.some((k) => k.startsWith(`${q1} `));
     if (liste.length === 1 && !hatStarkenTreffer) {
       const einziger = liste[0];
       liste = [...liste, ...filtere(eintraege.filter((e) => e !== einziger && wortAnfang(e)), eingabe)];

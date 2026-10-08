@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { MIETSTUFEN_DATEN, pruefeMietstufenDaten, sucheMietstufe } from "../../src/mietstufen/daten";
-import { vorKomma } from "../../src/mietstufen/normalisieren";
 import type { SuchEingabe, SuchErgebnis } from "../../src/mietstufen/typen";
 import { BMWSB_2025 } from "../fixtures/bmwsb-2025";
 
@@ -114,6 +113,24 @@ describe("Mietstufen: mehrdeutige Namen", () => {
     expect(e.status).toBe("mehrdeutig");
     expect(kandidaten(e).map((k) => `${k.kreis}:${k.mietstufe}`).sort()).toEqual(["Erding:5", "Mühldorf a.Inn:1", "München:2"]);
     expect(eindeutig(sucheMietstufe({ gemeinde: "Taufkirchen", kreis: "Landkreis München" })).mietstufe).toBe(2);
+  });
+});
+
+describe("Mietstufen: Kurznamen verbreiteter Städte (Endreview C-2)", () => {
+  it.each([
+    ["Esslingen", "Esslingen am Neckar", 5, "Eßlingen"],
+    ["Monheim", "Monheim am Rhein", 6, "Monheim"],
+  ])("„%s“ ist mehrdeutig und nennt %s (Stufe %i) neben dem kleinen Namensvetter", (eingabe, stadt, stufe, dorf) => {
+    const e = sucheMietstufe({ gemeinde: eingabe });
+    expect(e.status).toBe("mehrdeutig");
+    const liste = kandidaten(e);
+    expect(liste.map((k) => k.gemeinde.split(",")[0])).toEqual(expect.arrayContaining([stadt, dorf]));
+    expect(liste.find((k) => k.gemeinde.startsWith(stadt))?.mietstufe).toBe(stufe);
+  });
+
+  it("mit Land oder Kreis ist die Stadt eindeutig", () => {
+    expect(eindeutig(sucheMietstufe({ gemeinde: "Monheim", land: "Nordrhein-Westfalen" }))).toMatchObject({ gemeinde: "Monheim am Rhein, Stadt", mietstufe: 6 });
+    expect(eindeutig(sucheMietstufe({ gemeinde: "Esslingen", kreis: "Esslingen" })).mietstufe).toBe(5);
   });
 });
 

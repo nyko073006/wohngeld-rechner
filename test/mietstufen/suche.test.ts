@@ -172,6 +172,38 @@ describe("Ortssuche: lockere Umlautsuche erfindet keinen eindeutigen Treffer (En
   });
 });
 
+describe("Ortssuche: Kurzname einer Stadt mit eigener Anlagezeile (Endreview C-2)", () => {
+  // Ein Dorf heißt genau wie der Anfang einer Stadt: „Esslingen“ darf nicht still das Dorf liefern.
+  const stadt = erzeugeSuche(
+    DATEN([
+      ["07138400", "Esslingen", 1, "k"],
+      ["06534400", "Esslingen am Neckar, Stadt", 5, "g"],
+      ["07138410", "Bergen", 1, "k"],
+      ["06534410", "Bergen im Tal", 3, "k"],
+    ]),
+  );
+
+  it("der exakte Kurzname und die Stadt mit eigener Zeile sind zusammen mehrdeutig", () => {
+    const e = stadt({ gemeinde: "Esslingen" });
+    expect(e.status).toBe("mehrdeutig");
+    expect(namen(e)).toEqual(["Esslingen am Neckar, Stadt", "Esslingen"]);
+  });
+
+  it("Land oder Kreis entscheidet: Hessen gibt die Stadt, Rheinland-Pfalz das Dorf, Kreis ebenso", () => {
+    expect(eindeutig(stadt({ gemeinde: "Esslingen", land: "Hessen" })).mietstufe).toBe(5);
+    expect(eindeutig(stadt({ gemeinde: "Esslingen", land: "RP" })).mietstufe).toBe(1);
+    expect(eindeutig(stadt({ gemeinde: "Esslingen", kreis: "Marburg-Biedenkopf" })).gemeinde).toBe("Esslingen am Neckar, Stadt");
+  });
+
+  it("nur Gemeinden mit eigener Anlagezeile (Herkunft g) kommen dazu: „Bergen im Tal“ (k) bleibt außen vor", () => {
+    expect(eindeutig(stadt({ gemeinde: "Bergen" })).gemeinde).toBe("Bergen");
+  });
+
+  it("die volle Schreibweise bleibt eindeutig", () => {
+    expect(eindeutig(stadt({ gemeinde: "Esslingen am Neckar" })).mietstufe).toBe(5);
+  });
+});
+
 describe("Ortssuche: nicht gefunden mit ähnlichen Namen", () => {
   it("Teilname ist nie ein eindeutiger Treffer, sondern ein Vorschlag", () => {
     const e = suche({ gemeinde: "Frankfurt am" });
