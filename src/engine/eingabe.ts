@@ -2,6 +2,7 @@ import type { Mietstufe, UnterhaltArt } from "../rechtsstand";
 
 // § 14 WoGG. Regel je Art: siehe src/engine/einkommen/jahreseinkommen.ts und den E2-Plan, Abschnitt „Einnahmearten“.
 export const EINNAHME_ARTEN = [
+  // Aktivrente: steuerfreien Teil als sonstige_voll Nr. 12 eintragen, nur den steuerpflichtigen Rest hier.
   "nichtselbstaendig",
   "minijob_pauschal",
   "rente",
@@ -22,7 +23,8 @@ export const EINNAHME_ARTEN = [
 export type EinnahmeArt = (typeof EINNAHME_ARTEN)[number];
 
 // Nummern aus § 14 Abs. 2 WoGG ohne eigene Art. Nr. 13 und 23 sind weggefallen.
-export const NUMMERN_VOLL: readonly number[] = [2, 4, 5, 7, 9, 14, 16, 17, 18, 20, 22, 28, 30, 31];
+// Nr. 12 (Aktivrente, § 3 Nr. 21 EStG) gilt seit 01.01.2026.
+export const NUMMERN_VOLL: readonly number[] = [2, 4, 5, 7, 9, 12, 14, 16, 17, 18, 20, 22, 28, 30, 31];
 export const NUMMERN_HAELFTE: readonly number[] = [8, 10, 24, 25, 26, 29];
 
 // § 7 Abs. 1 Satz 1 Nr. 1, 2, 4 bis 9 und Abs. 2 WoGG.

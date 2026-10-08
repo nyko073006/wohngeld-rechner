@@ -96,6 +96,9 @@ describe("Jahreseinkommen: Einnahmen nach § 14 Abs. 2 WoGG", () => {
   it("§ 14 Abs. 2 Nr. 9 WoGG über sonstige_voll: Krankentagegeld voll", () => {
     expect(jahr([{ art: "sonstige_voll", nummer: 9, betragMonatlich: 200 }])).toBe("2400.00");
   });
+  it("§ 14 Abs. 2 Nr. 12 WoGG: Aktivrente voll, ohne Pauschbetrag", () => {
+    expect(jahr([{ art: "sonstige_voll", nummer: 12, betragMonatlich: 1500 }])).toBe("18000.00");
+  });
   it("§ 14 Abs. 2 Nr. 26 WoGG über sonstige_haelfte: Pflegeeinnahmen zur Hälfte", () => {
     expect(jahr([{ art: "sonstige_haelfte", nummer: 26, betragMonatlich: 300 }])).toBe("1800.00");
   });
