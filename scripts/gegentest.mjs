@@ -78,7 +78,17 @@ const MUTATIONEN = [
     neu: 'if (teilname.length === 1 && teilname[0]) return { status: "eindeutig", treffer: treffer(teilname[0]) };\n    if (teilname.length > 0) return { status: "nicht_gefunden"',
   },
   { name: "Länderkürzel HE falsch", datei: "src/mietstufen/suche.ts", alt: 'he: "06"', neu: 'he: "07"' },
-  { name: "Kandidatenliste unbegrenzt", datei: "src/mietstufen/suche.ts", alt: "MAX_KANDIDATEN = 25", neu: "MAX_KANDIDATEN = 26" },
+  { name: "Kandidatenliste 26 statt 25", datei: "src/mietstufen/suche.ts", alt: "MAX_KANDIDATEN = 25", neu: "MAX_KANDIDATEN = 26" },
+  {
+    name: "C-1: lockere Umlautsuche mit gelockerter Eingabe, eindeutig vor Teilname",
+    datei: "src/mietstufen/suche.ts",
+    alt: `    const lose = filtere([...(locker.get(q0) ?? locker.get(q1) ?? [])], eingabe);
+    if (lose.length === 1 && lose[0] && teilname.length === 0) return`,
+    neu: `    const lose = filtere([...(locker.get(lockerSchluessel(q0)) ?? locker.get(lockerSchluessel(q1)) ?? [])], eingabe);
+    if (lose.length === 1 && lose[0]) return`,
+  },
+  { name: "C-2: Wortanfang-Regel nur ohne starken Treffer", datei: "src/mietstufen/suche.ts", alt: "if (starkGefunden) for (const e of grosseNachWort", neu: "if (false) for (const e of grosseNachWort" },
+  { name: "I-1: Anlagezeile vor Insel", datei: "scripts/mietstufen/erzeugen.ts", alt: "if (inselAgs.has(g.ags)) {", neu: "if (inselAgs.has(g.ags) && !gemeindeStufe.has(g.ags)) {" },
   { name: "Tippfehler-Abstand 2 auf 3", datei: "src/mietstufen/suche.ts", alt: "ABSTAND_LANG = 2", neu: "ABSTAND_LANG = 3" },
   { name: "Annahme-Hinweis fehlt in der Quelle", datei: "src/mietstufen/suche.ts", alt: "Annahme: Gemeinde fehlt", neu: "Gemeinde fehlt" },
   { name: "Stufenprüfung der Datei aus", datei: "src/mietstufen/daten.ts", alt: "!MIETSTUFEN.includes(stufe as Mietstufe)", neu: "false" },

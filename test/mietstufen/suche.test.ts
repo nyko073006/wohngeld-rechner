@@ -153,6 +153,8 @@ describe("Ortssuche: lockere Umlautsuche erfindet keinen eindeutigen Treffer (En
     const e = lose({ gemeinde: "Aue" });
     expect(e.status).not.toBe("eindeutig");
     expect(namen(e)).toContain("Aue-Bad Schlema, Stadt");
+    // Die Eingabe wird nicht gelockert: „aue“ ist kein Tippfehler von „Au“.
+    expect(namen(e)).not.toContain("Au");
   });
 
   it("„Hochheim“ ist nicht eindeutig „Höchheim“: Hochheim am Main steht als Vorschlag neben Höchheim", () => {
