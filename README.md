@@ -27,7 +27,7 @@ Die Höchstbeträge hängen von der Mietstufe (I bis VII) des Wohnorts ab. Sie s
 
 - Gemeinden ab 10.000 Einwohnern stehen einzeln in der Anlage, alle anderen erhalten die Stufe ihres Kreises (Vorbemerkung der Anlage). Die 28 Gemeinden auf Inseln ohne Festlandanschluss (§ 12 Abs. 4a WoGG) haben gemeinsam Stufe V, auch wenn ihr Kreis niedriger liegt.
 - Die Anlage nennt nur Namen. Schlüssel und Kreise kommen aus dem Gemeindeverzeichnis; die Zuordnung läuft über das Verzeichnis 31.12.2020, gesucht wird in den Namen von 31.12.2025. Sechs Gemeinden, die im Verzeichnis 31.12.2020 fehlen (neu gebildet oder neu geschlüsselt), bekommen die Stufe ihres Kreises. Das ist eine Annahme, die Antwort sagt es.
-- Ein Ortsname, der mehrfach vorkommt (Neustadt, Weimar, Eisenach), liefert eine Kandidatenliste, keinen Treffer. Teile eines Namens („Bad Homburg“) sind nur Vorschläge.
+- Ein Ortsname, der mehrfach vorkommt (Neustadt, Weimar, Eisenach), liefert eine Kandidatenliste, keinen Treffer; ebenso ein Kurzname, mit dem eine Stadt mit eigener Anlagezeile beginnt (Esslingen, Monheim). Teile eines Namens („Bad Homburg“) sind nur Vorschläge.
 - Die Datei `data/mietstufen-2023.json` wird erzeugt: `npm run mietstufen:erzeugen`. Der Abgleich mit gesetze-im-internet.de läuft mit `npm run pruefe:mietstufen`.
 
 ## Quellen

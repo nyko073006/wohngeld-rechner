@@ -116,9 +116,9 @@ Regeln:
 
 Basis der Zuordnung ist das Gemeindeverzeichnis 31.12.2020, weil der Gebietsstand der Anlage (31.03.2021) bei Destatis nicht mehr abrufbar ist (Entscheidung des Auftraggebers vom 09.10.2026); die Zuordnung ist gegen beide Stände gleich. Die Suche läuft über die Namen des Verzeichnisses 31.12.2025. Gemeinden, die im Basisverzeichnis fehlen, erhalten die Kreisstufe als gekennzeichnete Annahme.
 
-Die Rohdaten liegen unverändert in `data/roh/`, damit jede Stufe nachprüfbar bleibt. Lizenz des Gemeindeverzeichnisses vor dem Einchecken prüfen und in der README nennen.
+Die Rohdaten liegen unverändert in `data/roh/`, damit jede Stufe nachprüfbar bleibt. Zur Lizenz des Gemeindeverzeichnisses siehe Abschnitt 8.
 
-Suche: normalisierter Name (Groß- und Kleinschreibung, ß/ss, Umlaute, Zusätze wie „Stadt“), optional Kreis und Land. Ergebnis ist genau ein Treffer, eine Kandidatenliste oder „nicht gefunden“ mit ähnlichen Namen. Postleitzahlen gehören nicht in diese Etappe.
+Suche: normalisierter Name (Groß- und Kleinschreibung, ß/ss, Umlaute, Zusätze wie „Stadt“), optional Kreis und Land. Ergebnis ist genau ein Treffer, eine Kandidatenliste oder „nicht gefunden“ mit ähnlichen Namen. Ein Kurzname, mit dem der Name einer Stadt mit eigener Anlagezeile (ab 10.000 Einwohnern) als ganzes Wort beginnt, liefert die Kandidatenliste, auch wenn eine kleine Gemeinde genau so heißt („Esslingen“: Eßlingen in der Eifel und Esslingen am Neckar). Land und Kreis entscheiden dann. Postleitzahlen gehören nicht in diese Etappe.
 
 ### 3.4 `server/`
 

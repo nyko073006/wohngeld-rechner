@@ -6,8 +6,8 @@ import { HERKUENFTE, type GemeindeZeile, type Herkunft, type MietstufenDaten, ty
 
 const istObjekt = (x: unknown): x is Record<string, unknown> => typeof x === "object" && x !== null && !Array.isArray(x);
 
-// Prüft die eingecheckte Datei beim ersten Zugriff. Eine kaputte Datei soll laut scheitern,
-// nicht still falsche Stufen liefern.
+// Prüft die eingecheckte Datei beim Laden des Moduls (der Suchindex entsteht erst beim ersten Aufruf).
+// Eine kaputte Datei soll laut scheitern, nicht still falsche Stufen liefern.
 export function pruefeMietstufenDaten(roh: unknown): MietstufenDaten {
   if (!istObjekt(roh) || !istObjekt(roh.meta) || !istObjekt(roh.laender) || !istObjekt(roh.kreise) || !Array.isArray(roh.gemeinden)) {
     throw new Error("Mietstufen-Daten: Aufbau stimmt nicht (meta, laender, kreise, gemeinden)");
