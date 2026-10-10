@@ -20,7 +20,9 @@ negativen Fällen keines dieser Tools.
 
 **Erwartetes Tool:** `mietstufe_finden`
 
-**Erwartetes Verhalten:** Das Tool liefert „mehrdeutig“ (Esslingen am Neckar, Eßlingen in der Eifel). ChatGPT fragt nach dem Bundesland oder nennt beide mit Stufe.
+**Erwartetes Verhalten:** ChatGPT nennt eine Mietstufe aus dem Tool, nicht aus eigenem Wissen. Bestanden sind: Rückfrage nach dem Bundesland, beide Orte mit Stufe (Esslingen am Neckar V, Eßlingen in der Eifel I) oder Esslingen am Neckar mit Stufe V.
+
+**Gelockert nach der Abnahme vom 10.10.2026:** ChatGPT löst „Esslingen“ vor dem Aufruf selbst zu „Esslingen am Neckar“ mit Bundesland auf, auch gegen die Anweisung in der Tool-Beschreibung (per Diagnoseprotokoll belegt). Das Tool selbst meldet „Esslingen“ weiter als mehrdeutig (`test/mietstufen/suche.test.ts`). Eßlingen in der Eifel ist ein Dorf; Esslingen am Neckar ist die naheliegende Lesart. Entscheidung des Nutzers.
 
 ### P3 Alleinerziehende in Wiesbaden
 
