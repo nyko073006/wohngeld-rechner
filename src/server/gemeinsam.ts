@@ -16,13 +16,13 @@ export const ortFelder = {
     .trim()
     .min(1)
     .max(100)
-    .describe('Name der Gemeinde oder Stadt, ohne Postleitzahl. Beispiel: "Esslingen am Neckar", "Leipzig"'),
+    .describe('Name der Gemeinde oder Stadt so wie vom Nutzer genannt, ohne Postleitzahl; nicht selbst ergänzen oder auflösen. Beispiel: "Leipzig", "Halle"'),
   kreis: z
     .string()
     .trim()
     .max(100)
     .optional()
-    .describe('Kreis oder kreisfreie Stadt, nur zur Unterscheidung gleichnamiger Orte. Beispiel: "Esslingen", "Leipzig"'),
+    .describe('Kreis oder kreisfreie Stadt, nur zur Unterscheidung gleichnamiger Orte. Beispiel: "Rhein-Sieg-Kreis", "Leipzig"'),
   land: z
     .string()
     .trim()

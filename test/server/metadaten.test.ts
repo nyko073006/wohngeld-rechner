@@ -47,6 +47,16 @@ describe("Metadaten (Spec 4)", () => {
     expect(einnahmen?.description).toMatch(/nicht beim Elternteil/);
   });
 
+  // Abnahme 10.10.2026, P2: ChatGPT löste „Esslingen“ wohl nach dem Feldbeispiel zu „Esslingen am Neckar“ auf.
+  it("Ortsfelder: Name wie genannt, kein Prüfort als Beispiel", async () => {
+    for (const t of await tools()) {
+      const ort = eigenschaften(t.inputSchema).filter(([pfad]) => /(^|\.)(gemeinde|kreis)$/.test(pfad));
+      for (const [pfad, p] of ort) expect(p.description, `${t.name}.${pfad}`).not.toMatch(/Esslingen|Jüterbog|Wiesbaden|Süderbrarup|Monheim/);
+      const gemeinde = ort.find(([pfad]) => pfad.endsWith("gemeinde"));
+      if (gemeinde) expect(gemeinde[1].description, t.name).toMatch(/so wie vom Nutzer genannt/);
+    }
+  });
+
   it("jeder Parameter hat eine Beschreibung mit Beispiel", async () => {
     for (const t of await tools()) {
       const liste = eigenschaften(t.inputSchema);
