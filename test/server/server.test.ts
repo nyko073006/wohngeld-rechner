@@ -14,8 +14,7 @@ describe("MCP-Server", () => {
   it("listet genau die Tools der Spec, alle nur lesend", async () => {
     const { body } = await rufeMcp(fetchFn, "tools/list");
     const tools = body.result.tools;
-    // Task 3 erweitert diese Liste um "wohngeld_berechnen".
-    expect(tools.map((t: any) => t.name).sort()).toEqual(["mietstufe_finden"]);
+    expect(tools.map((t: any) => t.name).sort()).toEqual(["mietstufe_finden", "wohngeld_berechnen"]);
     for (const t of tools)
       expect(t.annotations).toEqual({ readOnlyHint: true, destructiveHint: false, openWorldHint: false });
   });
