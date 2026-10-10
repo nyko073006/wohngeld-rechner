@@ -12,7 +12,8 @@
     "pruefe:rechtsstand": "tsx scripts/pruefe-rechtsstand.ts",
     "mietstufen:erzeugen": "tsx scripts/mietstufen-erzeugen.ts",
     "pruefe:mietstufen": "tsx scripts/pruefe-mietstufen.ts",
-    "gegentest": "node scripts/gegentest.mjs"
+    "gegentest": "node scripts/gegentest.mjs",
+    "pruefe:bundle": "node scripts/pruefe-bundle.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "2.3",

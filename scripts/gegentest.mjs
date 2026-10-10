@@ -92,6 +92,58 @@ const MUTATIONEN = [
   { name: "Tippfehler-Abstand 2 auf 3", datei: "src/mietstufen/suche.ts", alt: "ABSTAND_LANG = 2", neu: "ABSTAND_LANG = 3" },
   { name: "Annahme-Hinweis fehlt in der Quelle", datei: "src/mietstufen/suche.ts", alt: "Annahme: Gemeinde fehlt", neu: "Gemeinde fehlt" },
   { name: "Stufenprüfung der Datei aus", datei: "src/mietstufen/daten.ts", alt: "!MIETSTUFEN.includes(stufe as Mietstufe)", neu: "false" },
+  { name: "Annotation readOnlyHint", datei: "src/server/gemeinsam.ts", alt: "readOnlyHint: true,", neu: "readOnlyHint: false," },
+  {
+    name: "Hinweis bei mehrdeutigem Wohnort fehlt",
+    datei: "src/server/wohngeld-berechnen.ts",
+    alt: "hinweise: [HINWEIS_UNVERBINDLICH, HINWEIS_MEHRDEUTIG]",
+    neu: "hinweise: [HINWEIS_MEHRDEUTIG]",
+  },
+  {
+    name: "Gemeinsame Stufe trotz gekürzter Liste",
+    datei: "src/server/mietstufe-finden.ts",
+    alt: "if (e.kandidaten.length !== e.anzahl) return undefined;",
+    neu: "if (false) return undefined;",
+  },
+  {
+    name: "Wortanfang-Ergänzung nur bei genau einem Zusatztreffer",
+    datei: "src/mietstufen/suche.ts",
+    alt: "if (liste.length >= 1 && !hatStarkenTreffer) {",
+    neu: "if (liste.length === 1 && !hatStarkenTreffer) {",
+  },
+  { name: "Landkürzel NRW", datei: "src/mietstufen/suche.ts", alt: 'nrw: "05"', neu: 'nrwx: "05"' },
+  {
+    name: "Landesvorsatz Freie Hansestadt",
+    datei: "src/mietstufen/suche.ts",
+    alt: "freie und hansestadt|freie hansestadt|land",
+    neu: "freie und hansestadt|land",
+  },
+  {
+    name: "Längenvorfilter fehlt",
+    datei: "src/mietstufen/suche.ts",
+    alt: "(Math.abs(k.length - q1.length) > grenze ? grenze + 1 : abstand(q1, k))",
+    neu: "abstand(q1, k)",
+  },
+  {
+    name: "Längengrenze Gemeinde",
+    datei: "src/server/gemeinsam.ts",
+    alt: ".max(100)\n    .describe('Name der Gemeinde",
+    neu: ".max(100000)\n    .describe('Name der Gemeinde",
+  },
+  { name: "Stichtag in UTC statt Berlin", datei: "src/server/wohngeld-berechnen.ts", alt: 'timeZone: "Europe/Berlin"', neu: 'timeZone: "UTC"' },
+  { name: "Feldnamen nicht übersetzt", datei: "src/server/wohngeld-berechnen.ts", alt: "FELDNAMEN[w] ?? w", neu: "w" },
+  {
+    name: "Rechtsstand-Fehler nicht übersetzt",
+    datei: "src/server/wohngeld-berechnen.ts",
+    alt: "throw new Error(`Rechtsstand noch nicht verfügbar. ${f.message}`)",
+    neu: "throw f",
+  },
+  {
+    name: "wohnort und mietstufe zugleich erlaubt",
+    datei: "src/server/wohngeld-berechnen.ts",
+    alt: "if (a.wohnort && a.mietstufe !== undefined) throw",
+    neu: "if (false) throw",
+  },
 ];
 
 let gruen = 0;

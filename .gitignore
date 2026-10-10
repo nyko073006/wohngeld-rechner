@@ -8,3 +8,4 @@ coverage/
 .DS_Store
 handoffs/
 .vitest/
+dist-pruefung/
