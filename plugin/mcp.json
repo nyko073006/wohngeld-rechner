@@ -1,0 +1,14 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "wohngeld-rechner": {
+      "type": "streamable-http",
+      "url": "https://wohngeld-rechner.nyko-a85.workers.dev/mcp",
+      "extensions": {
+        "com.openai": {
+          "auth": { "type": "none" }
+        }
+      }
+    }
+  }
+}

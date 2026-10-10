@@ -38,7 +38,7 @@ const rechnung = await rufeMcp(fetchFn, "tools/call", {
 const r = rechnung.body?.result?.structuredContent;
 pruefe("wohngeld_berechnen BMWSB-Beispiel 1 = 110 €", r?.wohngeld_monatlich === 110, r ?? rechnung.body);
 
-for (const seite of ["datenschutz", "impressum"]) {
+for (const seite of ["datenschutz", "impressum", "support", "nutzungsbedingungen"]) {
   const antwort = await fetch(url.replace(/\/mcp$/, `/${seite}`), { headers: { "x-wohngeld-pruefung": "1" } });
   pruefe(`/${seite} liefert 200`, antwort.status === 200, antwort.status);
 }

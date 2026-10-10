@@ -14,7 +14,8 @@
     "pruefe:mietstufen": "tsx scripts/pruefe-mietstufen.ts",
     "gegentest": "node scripts/gegentest.mjs",
     "pruefe:bundle": "node scripts/pruefe-bundle.mjs",
-    "pruefe:deploy": "tsx scripts/pruefe-deploy.ts"
+    "pruefe:deploy": "tsx scripts/pruefe-deploy.ts",
+    "plugin:zip": "node scripts/plugin-zip.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "2.3",

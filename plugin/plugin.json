@@ -1,0 +1,101 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "wohngeld-rechner",
+  "version": "0.3.0",
+  "description": "Estimates German housing benefit (Wohngeld) under the Wohngeldgesetz and finds the rent level (Mietstufe) of any German municipality.",
+  "author": {
+    "name": "Niklas J. Thaler",
+    "email": "wohngeld@patinasouthside.de",
+    "url": "https://wohngeld-rechner.nyko-a85.workers.dev/"
+  },
+  "homepage": "https://wohngeld-rechner.nyko-a85.workers.dev/",
+  "repository": "https://github.com/nyko073006/wohngeld-rechner",
+  "license": "MIT",
+  "keywords": ["wohngeld", "housing benefit", "germany", "mietstufe", "wogg"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Wohngeld-Rechner",
+        "shortDescription": "Estimate German housing aid",
+        "longDescription": "Wohngeld-Rechner calculates an estimate of German housing benefit (Wohngeld: rent subsidy for tenants or burden subsidy for owners) for a household, following the formula in § 19 WoGG and the statutory income rules, and looks up the rent level (Mietstufe I–VII) of a municipality from the official list. Results show the calculation path and the legal state used. Inputs are not stored. Intended for people living in Germany who want to know whether an application is worthwhile. The result is a non-binding estimate, not legal advice; the decision of the local housing benefit office is authoritative. Answers are in German.",
+        "developerName": "Niklas J. Thaler",
+        "category": "Finance",
+        "capabilities": ["Estimate housing benefit", "Find rent level of a municipality"],
+        "websiteURL": "https://wohngeld-rechner.nyko-a85.workers.dev/",
+        "supportURL": "https://wohngeld-rechner.nyko-a85.workers.dev/support",
+        "privacyPolicyURL": "https://wohngeld-rechner.nyko-a85.workers.dev/datenschutz",
+        "termsOfServiceURL": "https://wohngeld-rechner.nyko-a85.workers.dev/nutzungsbedingungen",
+        "defaultPrompt": [
+          "Wie viel Wohngeld bekomme ich? Ich bin Rentnerin, 1.300 € Rente, wohne allein in Jüterbog, Miete ohne Heizung 335 €.",
+          "Welche Mietstufe gilt in Monheim am Rhein fürs Wohngeld?",
+          "Habe ich als Alleinerziehende mit zwei Kindern Anspruch auf Wohngeld Plus?"
+        ],
+        "brandColor": "#0B5CAD",
+        "brandColorDark": "#7DB7F5",
+        "composerIcon": "./assets/logo.svg",
+        "logo": "./assets/logo.svg"
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Rent subsidy for a single pensioner; the rent level is derived from the town. The assistant must ask about taxes, health/care insurance and pension insurance before calculating instead of assuming them. Follow-up answer: \"Nur Kranken- und Pflegeversicherung.\"",
+              "prompt": "Wie viel Wohngeld bekomme ich? Ich bin Rentnerin, bekomme 1.300 € Rente im Monat und wohne allein in Jüterbog. Meine Miete ohne Heizung beträgt 335 €.",
+              "tools_triggered": "wohngeld_berechnen, mietstufe_finden",
+              "expected_behavior": "Asks about taxes and insurance first, then calls wohngeld_berechnen (optionally mietstufe_finden before). Result about 110 € per month under the 2025 legal state (valid until 31 Dec 2026), with calculation path and the note that this is a non-binding estimate."
+            },
+            {
+              "description": "Rent level lookup for an ambiguous town name (Esslingen am Neckar in Baden-Württemberg vs. Eßlingen in the Eifel).",
+              "prompt": "Welche Mietstufe hat Esslingen?",
+              "tools_triggered": "mietstufe_finden",
+              "expected_behavior": "Calls mietstufe_finden and names the rent level from the tool, not from model knowledge. Accepted: asks for the federal state, lists both towns (Esslingen am Neckar V, Eßlingen I), or answers Esslingen am Neckar with rent level V."
+            },
+            {
+              "description": "Single parent with two children in Wiesbaden, one child receives child maintenance advance (Unterhaltsvorschuss).",
+              "prompt": "Ich bin alleinerziehend mit zwei Kindern in Wiesbaden, verdiene 1.530 € brutto, zahle Kranken- und Rentenversicherung, aber keine Steuern. Ein Kind bekommt 696 € Unterhaltsvorschuss. Die Miete ohne Heizung liegt bei 700 €. Habe ich Anspruch auf Wohngeld Plus?",
+              "tools_triggered": "wohngeld_berechnen",
+              "expected_behavior": "Calls wohngeld_berechnen with rent level VI derived from Wiesbaden. Result about 372 € per month under the 2025 legal state, with calculation path and the non-binding note."
+            },
+            {
+              "description": "Burden subsidy (Lastenzuschuss) for a homeowner household of three in a small municipality.",
+              "prompt": "Wir haben ein Eigenheim in Süderbrarup, sind zu dritt, ich verdiene 2.150 € brutto mit Kranken- und Rentenversicherung, die anderen haben kein Einkommen. Die Belastung liegt bei 750 € im Monat. Bekommen wir Lastenzuschuss?",
+              "tools_triggered": "wohngeld_berechnen",
+              "expected_behavior": "Calls wohngeld_berechnen with art \"lastenzuschuss\"; rent level I via the district Schleswig-Flensburg. Result about 320 € per month under the 2025 legal state."
+            },
+            {
+              "description": "Rent level lookup with a state given as abbreviation.",
+              "prompt": "Ich ziehe nach Monheim in NRW. Welche Mietstufe gilt dort fürs Wohngeld?",
+              "tools_triggered": "mietstufe_finden",
+              "expected_behavior": "Calls mietstufe_finden with the state NRW and answers Monheim am Rhein, rent level VI."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Citizen's income (Bürgergeld) is a different benefit; the plugin must not be used. Expected: answer without the Wohngeld-Rechner tools.",
+              "prompt": "Wie viel Bürgergeld steht mir als Single zu?"
+            },
+            {
+              "description": "A rent index (Mietspiegel) is not the Wohngeld rent level (Mietstufe); mietstufe_finden must not be called. Expected: answer without the Wohngeld-Rechner tools.",
+              "prompt": "Wie hoch ist der Mietspiegel in Köln pro Quadratmeter?"
+            },
+            {
+              "description": "Child benefit (Kindergeld) application is out of scope. Expected: answer without the Wohngeld-Rechner tools.",
+              "prompt": "Wie beantrage ich Kindergeld für mein Neugeborenes?"
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "This plugin does not sell products or process payments."
+      },
+      "publication": {
+        "release_notes": "Initial release: housing benefit estimate (rent and burden subsidy) under the 2025 legal state and rent level lookup for all German municipalities.",
+        "translations": {
+          "de-DE": {
+            "subtitle": "Wohngeld und Mietstufe prüfen",
+            "description": "Der Wohngeld-Rechner schätzt das Wohngeld (Mietzuschuss oder Lastenzuschuss) eines Haushalts nach der Formel des § 19 WoGG und den gesetzlichen Einkommensregeln und findet die Mietstufe (I–VII) einer Gemeinde aus der amtlichen Liste. Das Ergebnis zeigt den Rechenweg und den angewandten Rechtsstand. Eingaben werden nicht gespeichert. Unverbindliche Schätzung, keine Rechtsberatung; maßgeblich ist der Bescheid der Wohngeldbehörde."
+          }
+        }
+      }
+    }
+  }
+}

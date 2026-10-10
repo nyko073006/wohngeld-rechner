@@ -13,6 +13,7 @@ export interface Env {
   NUTZUNG?: KvSpeicher;
   TELEGRAM_BOT_TOKEN?: string;
   TELEGRAM_CHAT_ID?: string;
+  OPENAI_APPS_CHALLENGE?: string;
 }
 export interface AusfuehrungsKontext {
   waitUntil(promise: Promise<unknown>): void;

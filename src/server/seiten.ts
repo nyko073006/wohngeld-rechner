@@ -9,7 +9,7 @@ h1{font-size:1.6rem}h2{font-size:1.15rem;margin-top:1.8rem}a{color:#0b5cad}
 nav{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;margin:1rem 0}.hinweis{background:#f3f3f3;padding:.7rem 1rem;border-radius:6px}
 @media (prefers-color-scheme:dark){body{color:#e8e8e8;background:#161616}a{color:#7db7f5}.hinweis{background:#242424}}`;
 
-const NAV = `<nav><a href="/">Start</a> <a href="/datenschutz">Datenschutz</a> <a href="/impressum">Impressum</a> <a href="/support">Support</a></nav>`;
+const NAV = `<nav><a href="/">Start</a> <a href="/datenschutz">Datenschutz</a> <a href="/impressum">Impressum</a> <a href="/support">Support</a> <a href="/nutzungsbedingungen">Nutzungsbedingungen</a></nav>`;
 
 function seite(titel: string, inhalt: string): string {
   return `<!doctype html>
@@ -26,7 +26,7 @@ const START = seite(
   "Wohngeld-Rechner",
   `<p>Der Wohngeld-Rechner ist ein MCP-Server für ChatGPT. Er schätzt das Wohngeld nach dem Wohngeldgesetz (WoGG) und ermittelt die Mietstufe einer Gemeinde.</p>
 <p class="hinweis">${HINWEIS}</p>
-<ul><li><a href="/datenschutz">Datenschutz</a></li><li><a href="/impressum">Impressum</a></li><li><a href="/support">Support</a></li></ul>
+<ul><li><a href="/datenschutz">Datenschutz</a></li><li><a href="/impressum">Impressum</a></li><li><a href="/support">Support</a></li><li><a href="/nutzungsbedingungen">Nutzungsbedingungen</a></li></ul>
 <h2>English summary</h2>
 <p>This is an MCP server for ChatGPT that estimates German housing benefit (Wohngeld, WoGG) and looks up the rent level of a municipality. Non-binding estimate, no legal advice; the decision of the housing benefit authority is binding.</p>`,
 );
@@ -72,12 +72,40 @@ const SUPPORT = seite(
 <p>For bugs or questions about the calculator write to ${MAIL} or open an issue at ${REPO}. We cannot give individual advice or file applications; the local housing benefit authority is responsible. Non-binding estimate, no legal advice.</p>`,
 );
 
+const NUTZUNGSBEDINGUNGEN = seite(
+  "Nutzungsbedingungen",
+  `<h2>Anbieter</h2>
+<p>Niklas J. Thaler, Hermann-Löns-Straße 10, 89537 Giengen (siehe <a href="/impressum">Impressum</a>).</p>
+<h2>Leistung</h2>
+<p>Der Wohngeld-Rechner ist ein kostenloser MCP-Server, den ChatGPT aufruft. Er schätzt das Wohngeld nach dem Wohngeldgesetz und ermittelt die Mietstufe einer Gemeinde. Es besteht kein Anspruch auf ständige Verfügbarkeit; der Dienst kann jederzeit geändert oder eingestellt werden.</p>
+<h2>Keine Beratung</h2>
+<p class="hinweis">${HINWEIS}</p>
+<p>Die Ergebnisse beruhen auf den Angaben, die im Chat gemacht werden, und auf dem angezeigten Rechtsstand. Sie ersetzen weder den Antrag noch die Prüfung durch die Wohngeldbehörde.</p>
+<h2>Haftung</h2>
+<p>Für Vorsatz und grobe Fahrlässigkeit sowie für Schäden aus der Verletzung von Leben, Körper oder Gesundheit wird nach den gesetzlichen Vorschriften gehaftet. Im Übrigen ist die Haftung für Schäden aus der Nutzung des kostenlosen Dienstes ausgeschlossen, soweit das Gesetz es zulässt.</p>
+<h2>Datenschutz</h2>
+<p>Siehe <a href="/datenschutz">Datenschutzerklärung</a>.</p>
+<h2>Recht</h2>
+<p>Es gilt das Recht der Bundesrepublik Deutschland. Zwingende Verbraucherschutzvorschriften des Staates, in dem Sie wohnen, bleiben unberührt.</p>
+<p>Stand: 11.10.2026</p>
+<h2>English summary</h2>
+<p>Wohngeld-Rechner is a free MCP server used by ChatGPT, provided by Niklas J. Thaler, Giengen, Germany. It gives a non-binding estimate of German housing benefit, not legal advice; the decision of the housing benefit authority is binding. No guarantee of availability. Liability is limited to intent, gross negligence and injury to life, body or health, as far as the law permits. German law applies; mandatory consumer protection rules of your country of residence remain unaffected. Contact: ${MAIL}</p>`,
+);
+
 const SEITEN: Record<string, string> = {
   "/": START,
   "/datenschutz": DATENSCHUTZ,
   "/impressum": IMPRESSUM,
   "/support": SUPPORT,
+  "/nutzungsbedingungen": NUTZUNGSBEDINGUNGEN,
 };
+
+// Domain-Nachweis fürs OpenAI-Portal: genau der Token, sonst nichts. Kommt als Secret, nie aus dem Repo.
+export function challengeFuer(token: string | undefined): Response | null {
+  const wert = token?.trim();
+  if (!wert) return null;
+  return new Response(wert, { headers: { "content-type": "text/plain; charset=utf-8" } });
+}
 
 export function seiteFuer(pfad: string): Response | null {
   const html = SEITEN[pfad];
