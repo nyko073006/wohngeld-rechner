@@ -4,31 +4,20 @@ import { INITIALIZE_PARAMS, rufeMcp } from "../hilfen/mcp";
 
 const fetchFn = (r: Request) => worker.fetch(r);
 
-describe("MCP-Server (Durchstich)", () => {
-  it("antwortet auf initialize", async () => {
+describe("MCP-Server", () => {
+  it("antwortet auf initialize mit Name und Version", async () => {
     const { status, body } = await rufeMcp(fetchFn, "initialize", INITIALIZE_PARAMS);
     expect(status).toBe(200);
-    expect(body.result.serverInfo.name).toBe("wohngeld-rechner");
+    expect(body.result.serverInfo).toMatchObject({ name: "wohngeld-rechner", version: "0.2.0" });
   });
 
-  it("listet rechner_status mit Annotationen", async () => {
+  it("listet genau die Tools der Spec, alle nur lesend", async () => {
     const { body } = await rufeMcp(fetchFn, "tools/list");
-    const tool = body.result.tools.find((t: any) => t.name === "rechner_status");
-    expect(tool).toBeDefined();
-    expect(tool.annotations).toEqual({
-      readOnlyHint: true,
-      destructiveHint: false,
-      openWorldHint: false,
-    });
-  });
-
-  it("ruft rechner_status auf", async () => {
-    const { body } = await rufeMcp(fetchFn, "tools/call", { name: "rechner_status", arguments: {} });
-    expect(body.result.structuredContent).toEqual({
-      name: "wohngeld-rechner",
-      version: "0.1.0",
-      hinweis: "Durchstich. Die Wohngeldberechnung folgt.",
-    });
+    const tools = body.result.tools;
+    // Task 3 erweitert diese Liste um "wohngeld_berechnen".
+    expect(tools.map((t: any) => t.name).sort()).toEqual(["mietstufe_finden"]);
+    for (const t of tools)
+      expect(t.annotations).toEqual({ readOnlyHint: true, destructiveHint: false, openWorldHint: false });
   });
 
   it("liefert 404 außerhalb von /mcp", async () => {
