@@ -70,7 +70,7 @@ const MUTATIONEN = [
   { name: "ß nicht aufgelöst", datei: "src/mietstufen/normalisieren.ts", alt: '.replace(/ß/g, "ss")', neu: "" },
   { name: "Abkürzung a.d. nicht aufgelöst", datei: "src/mietstufen/normalisieren.ts", alt: '"an der ", false],', neu: '"an derx", false],' },
   { name: "Klammerzusatz nicht als schwacher Schlüssel", datei: "src/mietstufen/normalisieren.ts", alt: "const schwach = new Set([normalisiere(ohneKlammer(vorKomma(name))), normalisiere(vorSchraegstrich(ohneKlammer(vorKomma(name))))]);", neu: "const schwach = new Set<string>();" },
-  { name: "Wortanfang-Regel (Frankfurt) aus", datei: "src/mietstufen/suche.ts", alt: "if (liste.length === 1 && !hatStarkenTreffer) {", neu: "if (false) {" },
+  { name: "Wortanfang-Regel (Frankfurt) aus", datei: "src/mietstufen/suche.ts", alt: "if (liste.length >= 1 && !hatStarkenTreffer) {", neu: "if (false) {" },
   {
     name: "Teilname als eindeutiger Treffer",
     datei: "src/mietstufen/suche.ts",
