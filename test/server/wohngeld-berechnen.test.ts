@@ -72,6 +72,19 @@ describe("Tool wohngeld_berechnen", () => {
     expect(body.result.content[0].text).toMatch(/^Rechtsstand noch nicht verfügbar\./);
   });
 
+  it.each(["2025-13-45", "2025-02-30"])("ungültiges Kalenderdatum %s: Schemafehler am Feld stichtag", async (stichtag) => {
+    const { body } = await rufe({ ...BEISPIEL_1, stichtag });
+    expect(body.result.isError).toBe(true);
+    expect(body.result.content[0].text).toContain("stichtag");
+    expect(body.result.content[0].text).toContain("gültiges Datum");
+  });
+
+  it("Schalttag 2024-02-29 passiert das Schema (danach fehlt nur der Rechtsstand)", async () => {
+    const { body } = await rufe({ ...BEISPIEL_1, stichtag: "2024-02-29" });
+    expect(body.result.content[0].text).not.toContain("gültiges Datum");
+    expect(body.result.content[0].text).toMatch(/^Rechtsstand noch nicht verfügbar\./);
+  });
+
   it("ohne Stichtag gilt heute in Berlin", async () => {
     const { stichtag: _, ...ohneStichtag } = BEISPIEL_1;
     const { body } = await rufe(ohneStichtag);

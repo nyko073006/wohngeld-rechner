@@ -79,7 +79,7 @@ In ChatGPT:
 4. Authentifizierung „No authentication“ wählen.
 5. „Create as a plugin“ wählen.
 
-Danach lässt sich der Server im Work-Tab mit `@wohngeld-rechner` ansprechen. Andere MCP-Clients tragen die URL als Streamable-HTTP-Server ein.
+Andere MCP-Clients tragen die URL als Streamable-HTTP-Server ein.
 
 ## Entwicklung
 
@@ -88,6 +88,7 @@ npm ci                      # Abhängigkeiten
 npm test                    # alle Tests (vitest)
 npm run typecheck           # tsc --noEmit
 npm run dev                 # lokaler Server (wrangler dev), http://localhost:8787/mcp
+npm run mietstufen:erzeugen # erzeugt data/mietstufen-2023.json aus den Rohdateien
 npm run pruefe:rechtsstand  # Rechtsstand gegen gesetze-im-internet.de
 npm run pruefe:mietstufen   # Rohdaten und Mietstufen-Datei gegen die Quellen im Netz
 npm run pruefe:bundle       # Worker-Bundle: keine node:-Importe, unter 3 MiB gzip
@@ -130,7 +131,13 @@ Abhängigkeiten laufen in eine Richtung: `server` → `engine`, `mietstufen` →
 
 Der Code steht unter der MIT-Lizenz (siehe `LICENSE`). Die Dateien in `data/` stehen nicht unter der MIT-Lizenz. Für sie gilt:
 
+- `data/roh/anlage.html` und `data/roh/wogg-12.html`: Gesetzes- und Verordnungstexte von gesetze-im-internet.de, amtliche Werke ohne urheberrechtlichen Schutz (§ 5 UrhG). Unverändert.
+- `data/roh/gv-31122020.xlsx` und `data/roh/gv-31122025.xlsx`: Gemeindeverzeichnis. © Statistisches Bundesamt (Destatis) im Auftrag der Herausgebergemeinschaft Statistische Ämter des Bundes und der Länder, GV-ISys. Vervielfältigung und Verbreitung, auch auszugsweise, mit Quellenangabe gestattet. Unverändert.
+- `data/mietstufen-2023.json`: aus beiden abgeleitet. Für diese eine Datei gilt der folgende Hinweis (wörtlich aus ihrem Feld `meta.hinweis`):
+
 > Gemeindeverzeichnis: © Statistisches Bundesamt (Destatis) im Auftrag der Herausgebergemeinschaft Statistische Ämter des Bundes und der Länder, GV-ISys, Gebietsstand 31.12.2025 und 31.12.2020. Vervielfältigung und Verbreitung mit Quellenangabe gestattet. In dieser Datei nur als Berechnungsgrundlage verwendet und verändert dargestellt (Zuordnung Gemeinde, Kreis, Mietenstufe). Mietenstufen: Anlage zu § 1 Abs. 3 WoGV, amtliches Werk (§ 5 UrhG). Die MIT-Lizenz des Repositoriums gilt nicht für diese Datei.
+
+Abrufdatum und Prüfsumme jeder Rohdatei stehen in `data/roh/quellen.json`.
 
 Rechtsquellen:
 

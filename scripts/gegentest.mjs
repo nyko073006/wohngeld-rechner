@@ -131,6 +131,7 @@ const MUTATIONEN = [
     neu: ".max(100000)\n    .describe('Name der Gemeinde",
   },
   { name: "Stichtag in UTC statt Berlin", datei: "src/server/wohngeld-berechnen.ts", alt: 'timeZone: "Europe/Berlin"', neu: 'timeZone: "UTC"' },
+  { name: "Stichtag: Kalenderprüfung wirkungslos", datei: "src/server/wohngeld-berechnen.ts", alt: ".refine(istKalenderdatum,", neu: ".refine(() => true," },
   { name: "Feldnamen nicht übersetzt", datei: "src/server/wohngeld-berechnen.ts", alt: "FELDNAMEN[w] ?? w", neu: "w" },
   {
     name: "Rechtsstand-Fehler nicht übersetzt",

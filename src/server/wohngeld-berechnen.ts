@@ -60,10 +60,17 @@ const unterhaltSchema = z.object({
   tituliert: z.boolean().optional().describe("Durch Titel, notarielle Vereinbarung oder Bescheid festgelegt. Beispiel: true"),
 });
 
+function istKalenderdatum(text: string): boolean {
+  const [j = 0, m = 0, t = 0] = text.split("-").map(Number);
+  const d = new Date(Date.UTC(j, m - 1, t));
+  return d.getUTCFullYear() === j && d.getUTCMonth() === m - 1 && d.getUTCDate() === t;
+}
+
 export const wohngeldBerechnenEingabe = z.object({
   stichtag: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "erwartet JJJJ-MM-TT")
+    .refine(istKalenderdatum, "erwartet ein gültiges Datum JJJJ-MM-TT")
     .optional()
     .describe('Datum, für das gerechnet wird, Standard heute. Beispiel: "2026-07-01"'),
   wohnort: z

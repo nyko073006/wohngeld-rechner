@@ -12,7 +12,7 @@ negativen Fällen keines dieser Tools.
 
 **Erwartetes Tool:** `wohngeld_berechnen` (ggf. vorher `mietstufe_finden`)
 
-**Erwartetes Verhalten:** ChatGPT fragt nach Steuern, Kranken- und Pflegeversicherung und Rentenversicherung, bevor es rechnet, und setzt sie nicht selbst. Mit „nur Kranken- und Pflegeversicherung“ und Stichtag 2025 ergibt sich 110 € (BMWSB-Beispiel 1). Die Antwort enthält den Hinweis auf die unverbindliche Schätzung.
+**Erwartetes Verhalten:** ChatGPT fragt nach Steuern, Kranken- und Pflegeversicherung und Rentenversicherung, bevor es rechnet, und setzt sie nicht selbst. Mit „nur Kranken- und Pflegeversicherung“ und nach Rechtsstand 2025 (gilt bis 31.12.2026) ergibt sich 110 € (BMWSB-Beispiel 1). Die Antwort enthält den Hinweis auf die unverbindliche Schätzung.
 
 ### P2 Mietstufe eines mehrdeutigen Orts
 
@@ -28,7 +28,7 @@ negativen Fällen keines dieser Tools.
 
 **Erwartetes Tool:** `wohngeld_berechnen`
 
-**Erwartetes Verhalten:** Rechnung mit Mietstufe VI über den Wohnort. Ergebnis 372 € bei Stichtag 2025 (BMWSB-Beispiel 5), mit Rechenweg und Hinweis.
+**Erwartetes Verhalten:** Rechnung mit Mietstufe VI über den Wohnort. Ergebnis 372 € nach Rechtsstand 2025 (gilt bis 31.12.2026) (BMWSB-Beispiel 5), mit Rechenweg und Hinweis.
 
 ### P4 Lastenzuschuss für Eigentümer
 
@@ -36,7 +36,7 @@ negativen Fällen keines dieser Tools.
 
 **Erwartetes Tool:** `wohngeld_berechnen` mit `art: "lastenzuschuss"`
 
-**Erwartetes Verhalten:** Mietstufe I über den Kreis Schleswig-Flensburg, Ergebnis 320 € bei Stichtag 2025 (BMWSB-Beispiel 4).
+**Erwartetes Verhalten:** Mietstufe I über den Kreis Schleswig-Flensburg, Ergebnis 320 € nach Rechtsstand 2025 (gilt bis 31.12.2026) (BMWSB-Beispiel 4).
 
 ### P5 Ort mit Landangabe
 
