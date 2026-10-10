@@ -34,10 +34,11 @@ export function pruefeMietstufenDaten(roh: unknown): MietstufenDaten {
 
 export const MIETSTUFEN_DATEN: MietstufenDaten = pruefeMietstufenDaten(rohdaten);
 
-let suche: ((eingabe: SuchEingabe) => SuchErgebnis) | undefined;
+// Beim Laden gebaut: Auf Workers zählt das zur Startzeit des Isolats (Grenze 1 s), nicht zur CPU-Zeit
+// des ersten Requests (Free: 10 ms).
+const suche = erzeugeSuche(MIETSTUFEN_DATEN);
 
 // Ortssuche über die eingecheckten Daten (Spec 3.3 und 4 `mietstufe_finden`).
 export function sucheMietstufe(eingabe: SuchEingabe): SuchErgebnis {
-  suche ??= erzeugeSuche(MIETSTUFEN_DATEN);
   return suche(eingabe);
 }

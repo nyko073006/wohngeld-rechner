@@ -82,16 +82,19 @@ describe("Mietstufen: Leipzig Stadt gegen Leipzig Kreis", () => {
 });
 
 describe("Mietstufen: mehrdeutige Namen", () => {
-  it("„Neustadt“ hat fünf Gemeinden gleichen Namens mit Klammer- oder Schrägstrichzusatz", () => {
+  it("„Neustadt“: die Orte mit Zusatz und die Städte, deren Name mit Neustadt beginnt (Ruling 10 im E4-Plan)", () => {
     const e = sucheMietstufe({ gemeinde: "Neustadt" });
     expect(e.status).toBe("mehrdeutig");
-    expect(e.status === "mehrdeutig" ? e.anzahl : 0).toBe(5);
-    expect(kandidaten(e).map((k) => `${k.gemeinde} | ${k.land}`)).toEqual([
-      "Neustadt (Dosse), Stadt | Brandenburg",
-      "Neustadt (Hessen), Stadt | Hessen",
-      "Neustadt (Wied) | Rheinland-Pfalz",
-      "Neustadt/ Westerwald | Rheinland-Pfalz",
-      "Neustadt/Vogtl. | Sachsen",
+    expect(e.status === "mehrdeutig" ? e.anzahl : 0).toBe(17);
+    const namen = kandidaten(e).map((k) => k.gemeinde);
+    expect(namen).toContain("Neustadt (Dosse), Stadt");
+    expect(namen).toContain("Neustadt an der Weinstraße, Stadt");
+    expect(namen).toContain("Neustadt a.d.Aisch, St");
+    expect(new Set(kandidaten(e).map((k) => k.mietstufe)).size).toBeGreaterThan(1);
+    expect(kandidaten(sucheMietstufe({ gemeinde: "Neustadt", land: "Rheinland-Pfalz" })).map((k) => k.gemeinde)).toEqual([
+      "Neustadt (Wied)",
+      "Neustadt an der Weinstraße, Stadt",
+      "Neustadt/ Westerwald",
     ]);
     expect(eindeutig(sucheMietstufe({ gemeinde: "Neustadt", land: "Hessen" })).gemeinde).toBe("Neustadt (Hessen), Stadt");
   });

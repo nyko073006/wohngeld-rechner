@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { MAX_AEHNLICH, MAX_KANDIDATEN, erzeugeSuche } from "../../src/mietstufen/suche";
+import { sucheMietstufe } from "../../src/mietstufen/daten";
 import type { GemeindeZeile, MietstufenDaten, SuchErgebnis } from "../../src/mietstufen/typen";
 
 // Kleiner, von Hand gebauter Bestand: jede Regel der Suche hat hier einen Fall mit bekanntem Ausgang.
@@ -245,5 +246,43 @@ describe("Ortssuche: nicht gefunden mit ähnlichen Namen", () => {
   it("Land oder Kreis, in dem es den Ort nicht gibt, ergibt nicht gefunden statt eines Treffers aus einem anderen Land", () => {
     expect(suche({ gemeinde: "Leipzig", land: "Bayern" }).status).toBe("nicht_gefunden");
     expect(suche({ gemeinde: "Leipzig", kreis: "Neuwied" }).status).toBe("nicht_gefunden");
+  });
+});
+
+describe("Landangabe in Kurz- und Langform (E4)", () => {
+  it("„NRW“ trennt Monheim am Rhein von Monheim in Bayern", () => {
+    const e = sucheMietstufe({ gemeinde: "Monheim", land: "NRW" });
+    expect(e.status).toBe("eindeutig");
+    if (e.status === "eindeutig") {
+      expect(e.treffer.gemeinde).toBe("Monheim am Rhein, Stadt");
+      expect(e.treffer.mietstufe).toBe(6);
+    }
+  });
+
+  it("„BaWü“ trennt Esslingen am Neckar vom Eifeldorf", () => {
+    const e = sucheMietstufe({ gemeinde: "Esslingen", land: "BaWü" });
+    expect(e.status).toBe("eindeutig");
+    if (e.status === "eindeutig") expect(e.treffer.land).toBe("Baden-Württemberg");
+  });
+
+  it.each([
+    ["Bremen", "Freie Hansestadt Bremen", "Bremen"],
+    ["Hamburg", "Freie und Hansestadt Hamburg", "Hamburg"],
+    ["Berlin", "Land Berlin", "Berlin"],
+    ["Dresden", "Freistaat Sachsen", "Sachsen"],
+  ])("%s mit Landangabe „%s“", (gemeinde, land, erwartetesLand) => {
+    const e = sucheMietstufe({ gemeinde, land });
+    expect(e.status).toBe("eindeutig");
+    if (e.status === "eindeutig") expect(e.treffer.land).toBe(erwartetesLand);
+  });
+});
+
+describe("Laufzeit bei langen Eingaben (E4)", () => {
+  it("2.000 Zeichen dauern keine 200 ms", () => {
+    sucheMietstufe({ gemeinde: "Aachen" }); // Index aufbauen, nicht mitmessen
+    const start = performance.now();
+    const e = sucheMietstufe({ gemeinde: "x".repeat(2000) });
+    expect(e.status).toBe("nicht_gefunden");
+    expect(performance.now() - start).toBeLessThan(200);
   });
 });

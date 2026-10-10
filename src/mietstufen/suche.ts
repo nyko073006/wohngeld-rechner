@@ -13,7 +13,11 @@ export const ABSTAND_KURZ = 1;
 const KUERZEL: Readonly<Record<string, string>> = {
   sh: "01", hh: "02", ni: "03", hb: "04", nw: "05", he: "06", rp: "07", bw: "08",
   by: "09", sl: "10", be: "11", bb: "12", mv: "13", sn: "14", st: "15", th: "16",
+  nrw: "05", bawue: "08",
 };
+
+// Amtliche Langformen („Freie Hansestadt Bremen“, „Freistaat Bayern“, „Land Berlin“) auf den Ländernamen kürzen.
+const LAND_VORSATZ = /^(freistaat|freie und hansestadt|freie hansestadt|land) /;
 
 interface Eintrag {
   ags: string;
@@ -75,7 +79,7 @@ export function erzeugeSuche(daten: MietstufenDaten): (eingabe: SuchEingabe) => 
   const filtere = (liste: readonly Eintrag[], eingabe: SuchEingabe): Eintrag[] => {
     let r = [...liste];
     if (eingabe.land) {
-      const l = normalisiere(eingabe.land).replace(/^freistaat /, "");
+      const l = normalisiere(eingabe.land).replace(LAND_VORSATZ, "");
       const code = KUERZEL[l];
       r = r.filter((e) => normalisiere(e.land) === l || e.ags.slice(0, 2) === code);
     }
@@ -112,12 +116,13 @@ export function erzeugeSuche(daten: MietstufenDaten): (eingabe: SuchEingabe) => 
     // statt still das kleine Dorf zu liefern. Land und Kreis filtern danach.
     if (starkGefunden) for (const e of grosseNachWort.get(q1.split(" ")[0] ?? "") ?? []) if (wortAnfang(e)) gefunden.add(e);
     let liste = filtere([...gefunden], eingabe);
-    // Nur über den Klammerzusatz oder Schrägstrich gefunden („Frankfurt“ -> Frankfurt (Oder)):
-    // Gemeinden, deren Name mit der Eingabe beginnt, gehören dazu („Frankfurt am Main“), auch ohne eigene Anlagezeile.
+    // Nur über den Klammerzusatz oder Schrägstrich gefunden („Frankfurt“ -> Frankfurt (Oder), „Neustadt“ -> Neustadt (Dosse) u. a.):
+    // Gemeinden, deren Name mit der Eingabe beginnt, gehören dazu („Frankfurt am Main“, „Neustadt an der Weinstraße“),
+    // auch ohne eigene Anlagezeile.
     const hatStarkenTreffer = liste.some((e) => e.stark.some((k) => anfragen.includes(k)));
-    if (liste.length === 1 && !hatStarkenTreffer) {
-      const einziger = liste[0];
-      liste = [...liste, ...filtere(eintraege.filter((e) => e !== einziger && wortAnfang(e)), eingabe)];
+    if (liste.length >= 1 && !hatStarkenTreffer) {
+      const schon = new Set(liste);
+      liste = [...liste, ...filtere(eintraege.filter((e) => !schon.has(e) && wortAnfang(e)), eingabe)];
     }
     if (liste.length === 1 && liste[0]) return { status: "eindeutig", treffer: treffer(liste[0]) };
     if (liste.length > 1) return mehrdeutig(liste);
@@ -144,7 +149,8 @@ export function erzeugeSuche(daten: MietstufenDaten): (eingabe: SuchEingabe) => 
     const grenze = q1.length >= 5 ? ABSTAND_LANG : q1.length === 4 ? ABSTAND_KURZ : -1;
     if (grenze < 0) return { status: "nicht_gefunden", aehnlich: [] };
     const nah = filtere(eintraege, eingabe)
-      .map((e): [number, Eintrag] => [Math.min(...e.stark.map((k) => abstand(q1, k))), e])
+      // Der Längenunterschied ist eine untere Schranke des Abstands; ist er größer als die Grenze, entfällt die Rechnung.
+      .map((e): [number, Eintrag] => [Math.min(...e.stark.map((k) => (Math.abs(k.length - q1.length) > grenze ? grenze + 1 : abstand(q1, k)))), e])
       .filter(([d]) => d <= grenze)
       .sort((x, y) => x[0] - y[0] || vergleiche(x[1].name, y[1].name));
     return { status: "nicht_gefunden", aehnlich: nah.slice(0, MAX_AEHNLICH).map(([, e]) => treffer(e)) };
