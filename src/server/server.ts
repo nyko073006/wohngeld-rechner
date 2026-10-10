@@ -3,7 +3,7 @@ import { registriereMietstufeFinden } from "./mietstufe-finden";
 import { registriereWohngeldBerechnen } from "./wohngeld-berechnen";
 
 export const SERVER_NAME = "wohngeld-rechner";
-export const SERVER_VERSION = "0.2.0";
+export const SERVER_VERSION = "0.3.0";
 
 // Pro Request ein frischer Server (zustandslos).
 export function erzeugeServer(): McpServer {

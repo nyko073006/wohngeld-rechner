@@ -2,5 +2,7 @@
   "name": "wohngeld-rechner",
   "main": "src/server/index.ts",
   "compatibility_date": "2026-10-01",
-  "observability": { "enabled": false }
+  "observability": { "enabled": false },
+  "kv_namespaces": [{ "binding": "NUTZUNG", "id": "027a4ea8ec1e4b5c98a19cf8e74e5010" }],
+  "triggers": { "crons": ["0 6 * * *"] }
 }

@@ -8,7 +8,7 @@ describe("MCP-Server", () => {
   it("antwortet auf initialize mit Name und Version", async () => {
     const { status, body } = await rufeMcp(fetchFn, "initialize", INITIALIZE_PARAMS);
     expect(status).toBe(200);
-    expect(body.result.serverInfo).toMatchObject({ name: "wohngeld-rechner", version: "0.2.0" });
+    expect(body.result.serverInfo).toMatchObject({ name: "wohngeld-rechner", version: "0.3.0" });
   });
 
   it("listet genau die Tools der Spec, alle nur lesend", async () => {

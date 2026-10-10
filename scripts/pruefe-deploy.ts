@@ -2,7 +2,12 @@
 import { INITIALIZE_PARAMS, rufeMcp } from "../test/hilfen/mcp";
 
 const url = process.argv[2] ?? "https://wohngeld-rechner.nyko-a85.workers.dev/mcp";
-const fetchFn = (r: Request) => fetch(new Request(url, r));
+// Prüfaufrufe zählt der Nutzungszähler nicht.
+const fetchFn = (r: Request) => {
+  const q = new Request(url, r);
+  q.headers.set("x-wohngeld-pruefung", "1");
+  return fetch(q);
+};
 let fehler = 0;
 const pruefe = (name: string, ok: boolean, ist: unknown) => {
   console.log(`${ok ? "ok    " : "FEHLER"} ${name}${ok ? "" : `: ${JSON.stringify(ist)}`}`);
@@ -10,7 +15,7 @@ const pruefe = (name: string, ok: boolean, ist: unknown) => {
 };
 
 const init = await rufeMcp(fetchFn, "initialize", INITIALIZE_PARAMS);
-pruefe("initialize Version 0.2.0", init.body?.result?.serverInfo?.version === "0.2.0", init.body);
+pruefe("initialize Version 0.3.0", init.body?.result?.serverInfo?.version === "0.3.0", init.body);
 
 const liste = await rufeMcp(fetchFn, "tools/list");
 const namen = (liste.body?.result?.tools ?? []).map((t: { name: string }) => t.name).sort();
@@ -33,7 +38,12 @@ const rechnung = await rufeMcp(fetchFn, "tools/call", {
 const r = rechnung.body?.result?.structuredContent;
 pruefe("wohngeld_berechnen BMWSB-Beispiel 1 = 110 €", r?.wohngeld_monatlich === 110, r ?? rechnung.body);
 
-const fremd = await fetch(url.replace(/\/mcp$/, "/anderes"));
+for (const seite of ["datenschutz", "impressum"]) {
+  const antwort = await fetch(url.replace(/\/mcp$/, `/${seite}`), { headers: { "x-wohngeld-pruefung": "1" } });
+  pruefe(`/${seite} liefert 200`, antwort.status === 200, antwort.status);
+}
+
+const fremd = await fetch(url.replace(/\/mcp$/, "/anderes"), { headers: { "x-wohngeld-pruefung": "1" } });
 pruefe("404 außerhalb von /mcp", fremd.status === 404, fremd.status);
 
 process.exit(fehler > 0 ? 1 : 0);
