@@ -57,6 +57,11 @@ describe("Metadaten (Spec 4)", () => {
     }
   });
 
+  // Abnahme 10.10.2026, P2 zweiter Lauf: ChatGPT übergab „Esslingen am Neckar“ mit Land, obwohl der Nutzer „Esslingen“ schrieb.
+  it("Tool-Beschreibung: Ort wörtlich übergeben, nicht selbst auflösen", async () => {
+    for (const t of await tools()) expect(t.description, t.name).toMatch(/exactly as the user wrote it/);
+  });
+
   it("jeder Parameter hat eine Beschreibung mit Beispiel", async () => {
     for (const t of await tools()) {
       const liste = eigenschaften(t.inputSchema);

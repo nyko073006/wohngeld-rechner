@@ -8,7 +8,9 @@ import { antwort, mietstufeSchema, NUR_LESEND, ortFelder, trefferSchema } from "
 export const MIETSTUFE_FINDEN_BESCHREIBUNG =
   "Use this when the user asks for the Mietstufe (rent level I to VII) of a German municipality, " +
   "or when a place must be resolved before estimating housing benefit with wohngeld_berechnen. " +
-  "Looks the place up in the annex to § 1 Abs. 3 WoGV. If the result is ambiguous, ask for Kreis or Bundesland. " +
+  "Looks the place up in the annex to § 1 Abs. 3 WoGV. Pass the place name exactly as the user wrote it; do not add name suffixes " +
+  "or a Bundesland the user did not mention, because this tool detects places sharing a name. " +
+  "If the result is ambiguous, ask the user which place is meant or list all candidates with their Mietstufe. " +
   "Stichworte: Wohngeld, Wohngeldrechner, Wohngeld Plus, Mietstufe, Mietenstufe, Mietzuschuss, Lastenzuschuss. " +
   "Nicht für: Bürgergeld, Mietspiegel, ortsübliche Vergleichsmiete, Kosten der Unterkunft nach SGB II.";
 

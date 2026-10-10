@@ -13,6 +13,7 @@ export const WOHNGELD_BERECHNEN_BESCHREIBUNG =
   "(Mietzuschuss) or owner-occupied home (Lastenzuschuss). Needs household members with their monthly income and " +
   "whether each pays taxes, health/care insurance and pension insurance; ask the user for these three, do not assume them. " +
   "Returns the monthly amount, the calculation path with legal references, assumptions and notes. " +
+  "Pass the place name exactly as the user wrote it, without adding suffixes or a Bundesland. " +
   "If the place is ambiguous, no amount is calculated; ask for Kreis or Bundesland, or pass mietstufe. " +
   "Stichworte: Wohngeld, Wohngeldrechner, Wohngeld Plus, Mietzuschuss, Lastenzuschuss, Mietstufe. " +
   "Nicht für: Bürgergeld, Kinderzuschlag, Grundsicherung, BAföG, Kosten der Unterkunft nach SGB II. " +
