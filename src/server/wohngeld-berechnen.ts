@@ -40,7 +40,11 @@ const einnahmeSchema = z.object({
 });
 
 const mitgliedSchema = z.object({
-  einnahmen: z.array(einnahmeSchema).max(20).describe('Einnahmen des Mitglieds, leer bei keinem Einkommen. Beispiel: [{"art":"rente","betrag_monatlich":1300}]'),
+  einnahmen: z.array(einnahmeSchema).max(20).describe(
+    "Einnahmen des Mitglieds, leer bei keinem Einkommen. Jede Einnahme bei dem Mitglied, dem sie zusteht: " +
+      "Unterhaltsvorschuss und Unterhalt für ein Kind beim Kind eintragen, nicht beim Elternteil. " +
+      'Beispiel: [{"art":"rente","betrag_monatlich":1300}]',
+  ),
   zahlt_steuern: z.boolean().describe("Zahlt Steuern vom Einkommen (§ 16 WoGG). Pflichtangabe, beim Nutzer erfragen. Beispiel: true"),
   zahlt_kv_pv: z.boolean().describe("Zahlt Kranken- und Pflegeversicherung (§ 16 WoGG). Pflichtangabe, beim Nutzer erfragen. Beispiel: true"),
   zahlt_rv: z.boolean().describe("Zahlt Rentenversicherung (§ 16 WoGG). Pflichtangabe, beim Nutzer erfragen. Beispiel: false"),

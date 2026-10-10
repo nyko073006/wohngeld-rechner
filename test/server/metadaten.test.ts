@@ -39,6 +39,14 @@ describe("Metadaten (Spec 4)", () => {
     }
   });
 
+  // Abnahme 10.10.2026, P3: ChatGPT trug den Unterhaltsvorschuss beim Elternteil ein (429 € statt 372 €).
+  it("Einnahmen: Unterhaltsvorschuss und Kindesunterhalt beim Kind eintragen", async () => {
+    const t = (await tools()).find((x) => x.name === "wohngeld_berechnen");
+    const einnahmen = eigenschaften(t.inputSchema).find(([pfad]) => pfad === "mitglieder[].einnahmen")?.[1];
+    expect(einnahmen?.description).toMatch(/Unterhaltsvorschuss.*Kind/);
+    expect(einnahmen?.description).toMatch(/nicht beim Elternteil/);
+  });
+
   it("jeder Parameter hat eine Beschreibung mit Beispiel", async () => {
     for (const t of await tools()) {
       const liste = eigenschaften(t.inputSchema);
